@@ -6,6 +6,12 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 
 project(hiptests)
 
+# Determine if hip-tests is being built as a subproject (using add_subdirectory)
+set(MASTER_PROJECT OFF)
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    set(MASTER_PROJECT ON)
+endif()
+message(WARNING "MASTER_PROJECT: ${MASTER_PROJECT}")
 
 # Check if platform and compiler are set
 if(HIP_PLATFORM STREQUAL "amd")
@@ -15,6 +21,10 @@ if(HIP_PLATFORM STREQUAL "amd")
 elseif(HIP_PLATFORM STREQUAL "nvidia")
     if(DEFINED HIP_COMPILER AND NOT HIP_COMPILER STREQUAL "nvcc")
         message(FATAL_ERROR "Unexpected HIP_COMPILER: ${HIP_COMPILER} is set for HIP_PLATFORM:nvidia")
+    endif()
+elseif(HIP_PLATFORM STREQUAL "spirv")
+    if(NOT DEFINED HIP_COMPILER OR NOT HIP_COMPILER STREQUAL "clang")
+        message(FATAL_ERROR "Unexpected HIP_COMPILER: ${HIP_COMPILER} is set for HIP_PLATFORM:spirv")
     endif()
 else()
     message(FATAL_ERROR "Unexpected HIP_PLATFORM: " ${HIP_PLATFORM})
@@ -44,15 +54,15 @@ endif()
 file(TO_CMAKE_PATH "${ROCM_PATH}" ROCM_PATH)
 message(STATUS "ROCM Path: ${ROCM_PATH}")
 
-
-if(UNIX)
+# Extract the HIP_VERSION
+if(MASTER_PROJECT AND UNIX)
     set(CMAKE_CXX_COMPILER "${HIP_PATH}/bin/hipcc")
     set(CMAKE_C_COMPILER "${HIP_PATH}/bin/hipcc")
     set(HIPCONFIG_EXECUTABLE "${HIP_PATH}/bin/hipconfig")
     execute_process(COMMAND perl ${HIPCONFIG_EXECUTABLE} --version
                     OUTPUT_VARIABLE HIP_VERSION
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
-else()
+elseif(MASTER_PROJECT AND WIN32)
     # using cmake_path as it handles path correctly.
     # Set both compilers else windows cmake complains of mismatch
     cmake_path(SET CMAKE_CXX_COMPILER "${HIP_PATH}/bin/hipcc.bat")
@@ -61,7 +71,20 @@ else()
     execute_process(COMMAND ${HIPCONFIG_EXECUTABLE} --version
                     OUTPUT_VARIABLE HIP_VERSION
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
+elseif(NOT MASTER_PROJECT)
+    if(NOT DEFINED HIP_VERSION_MINOR OR NOT DEFINED HIP_VERSION_MAJOR)
+        message(FATAL_ERROR "HIP_VERSION_MINOR and HIP_VERSION_MAJOR must be set")
+    endif()
+    message(WARNING "HIP_VERSION_MAJOR: ${HIP_VERSION_MAJOR}")
+    message(WARNING "HIP_VERSION_MINOR: ${HIP_VERSION_MINOR}")
+
+    if(NOT DEFINED HIP_VERSION_PATCH AND NOT DEFINED HIP_VERSION_PATCH_GITHASH)
+        message(FATAL_ERROR "When used as a subproject either HIP_VERSION_PATCH or HIP_VERSION_PATCH_GITHASH must be set")
+    endif()
+    message(WARNING "HIP_VERSION_PATCH: ${HIP_VERSION_PATCH}")
+    message(WARNING "HIP_VERSION_PATCH_GITHASH: ${HIP_VERSION_PATCH_GITHASH}")
 endif()
+
 if(HIP_PLATFORM STREQUAL "amd")
     # prioritize -DROCM_PATH over env{ROCM_PATH} for amd platform only
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --rocm-path=${ROCM_PATH}")
@@ -69,7 +92,9 @@ endif()
 # enforce c++17
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17")
 
-string(REPLACE "." ";" VERSION_LIST ${HIP_VERSION})
+if(MASTER_PROJECT)
+    string(REPLACE "." ";" VERSION_LIST ${HIP_VERSION})
+endif()
 list(GET VERSION_LIST 0 HIP_VERSION_MAJOR)
 list(GET VERSION_LIST 1 HIP_VERSION_MINOR)
 list(GET VERSION_LIST 2 HIP_VERSION_PATCH_GITHASH)
@@ -169,7 +194,18 @@ message(STATUS "CMAKE HIP ARCHITECTURES: ${CMAKE_HIP_ARCHITECTURES}")
 # OFFLOAD_ARCH_STR
 # ENV{HCC_AMDGPU_TARGET}
 # rocm_agent_enumerator
-if(NOT DEFINED OFFLOAD_ARCH_STR
+if(HIP_PLATFORM STREQUAL "spirv" AND NOT MASTER_PROJECT)
+    # for CHIP-SPV, OFFLOAD_ARCH_STR will be passed to CMAKE_CXX_FLAGS which will make
+    # compile-only flags (such as -x hip) to be passed to linker. This will cause strange errors.
+    # These could be removed, but then we will need to add manual linking of libCHIP.so so 
+    # might as well just use a different approach for CHIP-SPV path.
+    # set(OFFLOAD_ARCH_STR ${HIP_OFFLOAD_COMPILE_OPTIONS_BUILD})
+
+    message(WARNING "HIP_PLATFORM is spirv, OFFLOAD_ARCH_STR is set to ${OFFLOAD_ARCH_STR}")
+elseif(HIP_PLATFORM STREQUAL "spirv" AND MASTER_PROJECT)
+    # TODO skip setting this & enforce use of hipcc
+    message(FATAL_ERROR "building hip-tests with HIP_PLATFORM=spirv is not supported when building as a standalone project")
+elseif(NOT DEFINED OFFLOAD_ARCH_STR
    AND NOT DEFINED ENV{HCC_AMDGPU_TARGET}
    AND EXISTS "${ROCM_PATH}/bin/rocm_agent_enumerator"
    AND HIP_PLATFORM STREQUAL "amd" AND UNIX)
@@ -224,15 +260,15 @@ add_custom_target(build_tests)
 
 
 # Tests folder
-#add_subdirectory(unit ${CATCH_BUILD_DIR}/unit)
+add_subdirectory(unit ${CATCH_BUILD_DIR}/unit)
 add_subdirectory(ABM ${CATCH_BUILD_DIR}/ABM)
 add_subdirectory(kernels ${CATCH_BUILD_DIR}/kernels)
 add_subdirectory(hipTestMain ${CATCH_BUILD_DIR}/hipTestMain)
-#add_subdirectory(stress ${CATCH_BUILD_DIR}/stress)
-#add_subdirectory(TypeQualifiers ${CATCH_BUILD_DIR}/TypeQualifiers)
-if(UNIX)
+# add_subdirectory(stress ${CATCH_BUILD_DIR}/stress)
+# add_subdirectory(TypeQualifiers ${CATCH_BUILD_DIR}/TypeQualifiers)
+# if(UNIX)
 #   add_subdirectory(multiproc ${CATCH_BUILD_DIR}/multiproc)
-endif()
+# endif()
 
 cmake_policy(POP)
 
