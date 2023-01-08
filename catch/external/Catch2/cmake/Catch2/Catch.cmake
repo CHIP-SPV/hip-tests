@@ -191,8 +191,18 @@ function(hip_add_exe_to_target)
     # Create shared lib of all tests
     if(NOT RTC_TESTING)
       add_executable(${_EXE_NAME} EXCLUDE_FROM_ALL ${SRC_NAME} ${COMMON_SHARED_SRC} $<TARGET_OBJECTS:Main_Object> $<TARGET_OBJECTS:KERNELS>)
+
+      if(STANDALONE_TESTS)
+        message(WARNING "Adding standalone catch test: ${_EXE_NAME}")
+      endif()
+
     else ()
       add_executable(${_EXE_NAME} EXCLUDE_FROM_ALL ${SRC_NAME} ${COMMON_SHARED_SRC} $<TARGET_OBJECTS:Main_Object>)
+
+      if(STANDALONE_TESTS)
+        message(WARNING "Adding standalone catch test: ${_EXE_NAME}")
+      endif()
+
       if(HIP_PLATFORM STREQUAL "amd")
         target_link_libraries(${_EXE_NAME} hiprtc)
       elseif(HIP_PLATFORM STREQUAL "nvidia")
