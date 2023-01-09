@@ -145,7 +145,7 @@ static void runTest_hipTextureFilterMode() {
 TEST_CASE("Unit_hipNormalizedFloatValueTex_CheckModes") {
   CHECK_IMAGE_SUPPORT
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   hipDeviceProp_t props;
   HIP_CHECK(hipGetDeviceProperties(&props, 0));
   INFO("Device :: " << props.name);

@@ -85,7 +85,7 @@ TEST_CASE("Unit_hipEventElapsedTime_DifferentDevices") {
 }
 
 
-#if HT_AMD /* Disabled because frequency based wait is timing out on nvidia platforms */
+#if HT_AMD || HT_SPIRV /* Disabled because frequency based wait is timing out on nvidia platforms */
 TEST_CASE("Unit_hipEventElapsedTime_NotReady_Negative") {
   hipEvent_t start;
   HIP_CHECK(hipEventCreate(&start));

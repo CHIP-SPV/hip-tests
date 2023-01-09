@@ -155,7 +155,7 @@ template <PtrType type, typename UIntT> auto allocMem() {
     static_assert(AMD_ACTIVE<type>,
                   "nvidia backend compiler doesn't like hipExtMallocWithFlags, even in this "
                   "constexpr branch");
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     // 8 is the only acceptable size
     HIP_CHECK(
         hipExtMallocWithFlags(reinterpret_cast<void**>(&signalPtr), 8, hipMallocSignalMemory));
@@ -227,7 +227,7 @@ template <typename UIntT, PtrType ptrTypeValue> struct TestParams {
   constexpr static PtrType ptrType = ptrTypeValue;
 };
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEMPLATE_TEST_CASE("Unit_hipStreamValue_Write", "", (TestParams<uint32_t, PtrType::HostPtr>),
                    (TestParams<uint32_t, PtrType::DevicePtr>),
                    (TestParams<uint32_t, PtrType::DevicePtrToHost>),
@@ -396,7 +396,7 @@ DEFINE_STREAM_WAIT_VAL_TEST_CASES_INT32("NoMask_Nor",
 
 #undef DEFINE_STREAM_WAIT_VAL_TEST_CASES_INT32
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 // TEMPLATE_TEST_CASE wasn't working within a macro, so sections were used instead
 #define DEFINE_STREAM_WAIT_VAL_TEST_CASES_INT64(suffix, test_t)                                    \
   TEST_CASE("Unit_hipStreamValue_Wait64_Blocking_" + std::string(suffix)) {                        \

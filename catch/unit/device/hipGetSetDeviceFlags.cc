@@ -43,7 +43,7 @@ TEST_CASE("Unit_hipGetSetDeviceFlags_NullptrFlag") {
 }
 
 TEST_CASE("Unit_hipGetSetDeviceFlags_InvalidFlag") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HipTest::HIP_SKIP_TEST("EXSWCPHIPT-115");
   return;
 #endif

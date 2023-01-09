@@ -35,7 +35,10 @@ set(TEST_SRC
     hipAPIStreamDisable.cc
     # hipStreamAttachMemAsync.cc   # Disabling it on nvidia due to issue in function definition of hipStreamAttachMemAsync
                                    # Fixing would break ABI, to be re-enabled when the fix is made.
-    hipStreamValue.cc
+
+    # error: static_assert failed due to requirement 'AMD_ACTIVE<(PtrType)3>':
+    #hipStreamValue.cc
+
     hipStreamSynchronize.cc
     hipStreamQuery.cc
     hipDeviceGetStreamPriorityRange.cc

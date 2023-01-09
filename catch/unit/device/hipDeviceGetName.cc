@@ -58,7 +58,7 @@ TEST_CASE("Unit_hipDeviceGetName_NegTst") {
       // Scenario2
       HIP_CHECK_ERROR(hipDeviceGetName(nullptr, name.size(), device), hipErrorInvalidValue);
     }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     // These test scenarios fail on NVIDIA.
     SECTION("Zero name length") {
       // Scenario3
@@ -104,7 +104,7 @@ TEST_CASE("Unit_hipDeviceGetName_CheckPropName") {
 }
 
 TEST_CASE("Unit_hipDeviceGetName_PartialFill") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HipTest::HIP_SKIP_TEST("EXSWCPHIPT-108");
   return;
 #endif

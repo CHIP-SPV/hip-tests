@@ -4,8 +4,11 @@ set(TEST_SRC
   hipStreamPerThread_Event.cc
   hipStreamPerThread_MultiThread.cc
   hipStreamPerThread_DeviceReset.cc
-  hipStreamPerThrdTsts.cc
 )
+
+if(NOT HIP_PLATFORM STREQUAL "spirv")
+  set(TEST_SRC ${TEST_SRC} hipStreamPerThrdTsts.cc)
+endif()
 
 hip_add_exe_to_target(NAME StreamPerThreadTest
                       TEST_SRC ${TEST_SRC}

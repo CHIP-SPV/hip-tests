@@ -46,7 +46,7 @@ TEST_CASE("Unit_hipStreamSynchronize_UninitializedStream") {
 }
 #endif
 
-#if HT_AMD /* Disabled because frequency based wait is timing out on nvidia platforms */
+#if HT_AMD || HT_SPIRV /* Disabled because frequency based wait is timing out on nvidia platforms */
 
 /**
  * @brief Check that all work executing in a stream is finished after a call to
@@ -113,7 +113,7 @@ TEST_CASE("Unit_hipStreamSynchronize_NullStreamSynchronization") {
  * streams. Check that querying the nullStream does not affect synchronization of other streams.
  */
 TEST_CASE("Unit_hipStreamSynchronize_SynchronizeStreamAndQueryNullStream") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HipTest::HIP_SKIP_TEST("EXSWCPHIPT-22");
 #else
 

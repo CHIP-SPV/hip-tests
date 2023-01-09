@@ -92,7 +92,7 @@ TEST_CASE("Unit_hipCreateTextureObject_LinearResource") {
   }
 
   SECTION("hipResourceTypeLinear and valid resource view descriptor") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     // Populate resource descriptor
     resDesc.res.linear.devPtr = texBuf;
     resDesc.res.linear.desc = hipCreateChannelDesc(xsize, 0, 0, 0,

@@ -60,7 +60,7 @@ TEST_CASE("Unit_hipEventCreate_IncompatibleFlags") {
   hipEvent_t event;
   HIP_CHECK_ERROR(hipEventCreateWithFlags(&event, hipEventInterprocess), hipErrorInvalidValue);
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HIP_CHECK_ERROR(
       hipEventCreateWithFlags(&event, hipEventReleaseToDevice | hipEventReleaseToSystem),
       hipErrorInvalidValue);
@@ -69,7 +69,7 @@ TEST_CASE("Unit_hipEventCreate_IncompatibleFlags") {
   unsigned allFlags{hipEventReleaseToDevice | hipEventReleaseToSystem | hipEventBlockingSync |
                     hipEventDisableTiming | hipEventDefault | hipEventInterprocess};
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HIP_CHECK_ERROR(hipEventCreateWithFlags(&event, allFlags), hipErrorInvalidValue);
 #else
   /* Works on Non-AMD because hipEventReleaseToDevice / hipEventReleaseToSystem have no meaning in

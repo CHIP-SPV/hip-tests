@@ -93,7 +93,7 @@ static void runTest(const int width, const float offsetX = 0) {
   // Create texture object
   hipTextureObject_t textureObject = 0;
   auto ret = hipCreateTextureObject(&textureObject, &resDesc, &texDesc, NULL);
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   if(ret == hipErrorInvalidValue && resType == hipResourceTypeLinear) {
     free(hData);
     HIP_CHECK(hipFree(hipBuff));
@@ -191,7 +191,7 @@ TEST_CASE("Unit_hipTextureObj1DCheckRGBAModes - array") {
     runTest<hipAddressModeClamp, hipFilterModeLinear, hipResourceTypeArray, false>(255, 4);
   }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   // nvidia RTX2070 has problem in this mode
   SECTION("RGBA 1D hipAddressModeBorder, hipFilterModeLinear, hipResourceTypeArray, regularCoords") {
     runTest<hipAddressModeBorder, hipFilterModeLinear, hipResourceTypeArray, false>(255, 0);
@@ -214,7 +214,7 @@ TEST_CASE("Unit_hipTextureObj1DCheckRGBAModes - array") {
     runTest<hipAddressModeClamp, hipFilterModeLinear, hipResourceTypeArray, true>(255, 4.2);
   }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   // nvidia RTX2070 has problem in this mode
   SECTION("RGBA 1D hipAddressModeBorder, hipFilterModeLinear, hipResourceTypeArray, normalizedCoords") {
     runTest<hipAddressModeBorder, hipFilterModeLinear, hipResourceTypeArray, true>(255, 0);
@@ -242,7 +242,7 @@ TEST_CASE("Unit_hipTextureObj1DCheckSRGBAModes - array") {
     runTest<hipAddressModeClamp, hipFilterModeLinear, hipResourceTypeArray, false, true>(255, 4);
   }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   // nvidia RTX2070 has problem in this mode
   SECTION("SRGBA 1D hipAddressModeBorder, hipFilterModeLinear, hipResourceTypeArray, regularCoords") {
     runTest<hipAddressModeBorder, hipFilterModeLinear, hipResourceTypeArray, false, true>(255, 0);
@@ -264,7 +264,7 @@ TEST_CASE("Unit_hipTextureObj1DCheckSRGBAModes - array") {
     runTest<hipAddressModeClamp, hipFilterModeLinear, hipResourceTypeArray, true, true>(255, -3);
     runTest<hipAddressModeClamp, hipFilterModeLinear, hipResourceTypeArray, true, true>(255, 4);
   }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   // nvidia RTX2070 has problem in this mode
   SECTION("SRGBA 1D hipAddressModeBorder, hipFilterModeLinear, hipResourceTypeArray, normalizedCoords") {
     runTest<hipAddressModeBorder, hipFilterModeLinear, hipResourceTypeArray, true, true>(255, 0);

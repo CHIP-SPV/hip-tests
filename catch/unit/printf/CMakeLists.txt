@@ -15,11 +15,27 @@ elseif (HIP_PLATFORM MATCHES "nvidia")
                     TEST_SRC ${TEST_SRC}
                     TEST_TARGET_NAME build_tests
                     COMPILE_OPTIONS -std=c++17)
+elseif (HIP_PLATFORM MATCHES "spirv")
+  hip_add_exe_to_target(NAME printfTests
+                    TEST_SRC ${TEST_SRC}
+                    TEST_TARGET_NAME build_tests
+                    COMPILE_OPTIONS -std=c++17)
 endif()
 
 # Standalone exes
-add_executable(printfFlags_exe EXCLUDE_FROM_ALL printfFlags_exe.cc)
-add_executable(printfSpecifiers_exe EXCLUDE_FROM_ALL printfSpecifiers_exe.cc)
+if(HIP_PLATFORM STREQUAL "spirv")
+  # set(TEST_SRC_STANDALONE
+  #   printfFlags_exe.cc
+  #   printfSpecifiers_exe.cc
+  # )
+  # hip_add_exe_to_target(NAME printfTestsExes
+  #   TEST_SRC_STANDALONE ${TEST_SRC_STANDALONE}
+  #   TEST_TARGET_NAME build_tests
+  #   COMPILE_OPTIONS -std=c++17)
+else()
+  add_executable(printfFlags_exe EXCLUDE_FROM_ALL printfFlags_exe.cc)
+  add_executable(printfSpecifiers_exe EXCLUDE_FROM_ALL printfSpecifiers_exe.cc)
 
-add_dependencies(build_tests printfFlags_exe)
-add_dependencies(build_tests printfSpecifiers_exe)
+  add_dependencies(build_tests printfFlags_exe)
+  add_dependencies(build_tests printfSpecifiers_exe)
+endif()

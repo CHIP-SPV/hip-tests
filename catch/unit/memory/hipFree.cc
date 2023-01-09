@@ -49,7 +49,7 @@ using namespace std::chrono_literals;
 const std::chrono::duration<uint64_t, std::milli> delay = 50ms;
 constexpr size_t numAllocs = 10;
 
-#if HT_AMD /* Disabled because frequency based wait is timing out on nvidia platforms */
+#if HT_AMD || HT_SPIRV /* Disabled because frequency based wait is timing out on nvidia platforms */
 TEMPLATE_TEST_CASE("Unit_hipFreeImplicitSyncDev", "", char, float, float2, float4) {
   TestType* devPtr{};
   size_t size_mult = GENERATE(1, 32, 64, 128, 256);

@@ -50,7 +50,7 @@ THE SOFTWARE.
 #include "hip/hip_cooperative_groups.h"
 using namespace std::chrono;
 using namespace cooperative_groups;
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 #define HIPRT_CB
 #endif
 
@@ -113,7 +113,7 @@ __global__ void StreamPerThrdCoopKrnl(int *Ad, int *n) {
   }
 }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 __global__ void test_gwsPerThrd(uint* buf, uint bufSize, int64_t* tmpBuf,
                                 int64_t* result) {
     extern __shared__ int64_t tmp[];

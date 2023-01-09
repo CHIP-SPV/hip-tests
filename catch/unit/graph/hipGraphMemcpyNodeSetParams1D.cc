@@ -74,7 +74,7 @@ TEST_CASE("Unit_hipGraphMemcpyNodeSetParams1D_Negative") {
                                         hipMemcpyHostToDevice);
     REQUIRE(hipErrorInvalidValue == ret);
   }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   SECTION("Pass same pointer as source ptr and destination ptr") {
     ret = hipGraphMemcpyNodeSetParams1D(memcpyNode, A_d, A_d, Nbytes,
                                         hipMemcpyHostToDevice);

@@ -26,7 +26,7 @@ THE SOFTWARE.
 namespace {
 void checkArrayIsExpected(const hiparray array, const HIP_ARRAY3D_DESCRIPTOR& expected_desc) {
 // hipArray3DGetDescriptor doesn't currently exist (EXSWCPHIPT-87)
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   std::ignore = array;
   std::ignore = expected_desc;
 #else
@@ -56,7 +56,7 @@ TEMPLATE_TEST_CASE("Unit_hipArray3DCreate_happy", "", char, uchar2, uint2, int4,
   HIP_ARRAY3D_DESCRIPTOR desc{};
   desc.Format = vec_info::format;
   desc.NumChannels = vec_info::size;
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   desc.Flags = 0;
 #else
   desc.Flags = GENERATE(0, hipArraySurfaceLoadStore, hipArrayTextureGather);
@@ -95,7 +95,7 @@ TEMPLATE_TEST_CASE("Unit_hipArray3DCreate_MaxTexture", "", int, uint4, short, us
   HIP_ARRAY3D_DESCRIPTOR desc{};
   desc.Format = vec_info::format;
   desc.NumChannels = vec_info::size;
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   desc.Flags = 0;
 #else
   desc.Flags = GENERATE(0, hipArraySurfaceLoadStore);
@@ -315,7 +315,7 @@ TEST_CASE("Unit_hipArray3DCreate_Negative_NumericLimit") {
 // texture gather arrays may only be 2D
 TEMPLATE_TEST_CASE("Unit_hipArray3DCreate_Negative_Non2DTextureGather", "", char, uint2, int4,
                    float2, float4) {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HipTest::HIP_SKIP_TEST("Texture Gather arrays not supported using AMD backend");
   return;
 #endif

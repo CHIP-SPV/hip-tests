@@ -151,7 +151,7 @@ This testcase verifies the hipHostMalloc API by passing nullptr
 to the pointer variable
 */
 TEST_CASE("Unit_hipHostMalloc_Negative") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   {
     // Stimulate error condition:
     int* A = nullptr;

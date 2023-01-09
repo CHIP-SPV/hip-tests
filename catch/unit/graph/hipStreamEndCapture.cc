@@ -162,7 +162,7 @@ TEST_CASE("Unit_hipStreamEndCapture_Thread_Negative") {
   std::thread t(thread_func, stream, graph);
   t.join();
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HIP_CHECK(hipStreamEndCapture(stream, &graph));
 #endif
 

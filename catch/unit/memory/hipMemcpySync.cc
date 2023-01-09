@@ -175,10 +175,10 @@ static void runMemcpyTests(hipStream_t stream, bool async, allocType type, memTy
   }
 }
 
-#if HT_AMD /* Disabled because frequency based wait is timing out on nvidia platforms */
+#if HT_AMD || HT_SPIRV /* Disabled because frequency based wait is timing out on nvidia platforms */
 
 TEST_CASE("Unit_hipMemcpySync") {
-#if HT_AMD  // To be removed when EXSWCPHIPT-127 is fixed
+#if HT_AMD || HT_SPIRV  // To be removed when EXSWCPHIPT-127 is fixed
   HipTest::HIP_SKIP_TEST("EXSWCPHIPT-127 - Sync behaviour differs on AMD and Nvidia");
   return;
 #endif
@@ -192,7 +192,7 @@ TEST_CASE("Unit_hipMemcpySync") {
 }
 
 TEST_CASE("Unit_hipMemcpy2DSync") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HipTest::HIP_SKIP_TEST("EXSWCPHIPT-127 - Sync behaviour differs on AMD and Nvidia");
   return;
 #endif
@@ -208,7 +208,7 @@ TEST_CASE("Unit_hipMemcpy2DSync") {
 }
 
 TEST_CASE("Unit_hipMemcpy3DSync") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HipTest::HIP_SKIP_TEST("EXSWCPHIPT-127 - Sync behaviour differs on AMD and Nvidia");
   return;
 #endif

@@ -114,7 +114,7 @@ TEST_CASE("Unit_hipArrayCreate_MultiThread") {
 
 // Tests /////////////////////////////////////////
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 constexpr auto MemoryTypeHost = hipMemoryTypeHost;
 constexpr auto MemoryTypeArray = hipMemoryTypeArray;
 constexpr auto NORMALIZED_COORDINATES = HIP_TRSF_NORMALIZED_COORDINATES;

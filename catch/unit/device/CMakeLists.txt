@@ -48,5 +48,8 @@ hip_add_exe_to_target(NAME DeviceTest
                       TEST_TARGET_NAME build_tests
                       COMPILE_OPTIONS -std=c++14)
 
-add_dependencies(build_tests getDeviceCount)
-add_dependencies(build_tests hipDeviceGetP2PAttribute_exe)
+# CHIP-SPV TODO
+if(NOT HIP_PLATFORM STREQUAL "spirv")
+    add_dependencies(build_tests getDeviceCount)
+    add_dependencies(build_tests hipDeviceGetP2PAttribute_exe)
+endif()

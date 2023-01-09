@@ -141,7 +141,7 @@ static void validateDeviceMacro(int *archProp_h, hipDeviceProp_t *prop) {
  * __HIP_ARCH_HAS_3DGRID__ == has3dGrid
  * __HIP_ARCH_HAS_DYNAMIC_PARALLEL__ == hasDynamicParallelism
  */
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_hipGetDeviceProperties_ArchPropertiesTst") {
   int *archProp_h, *archProp_d;
   archProp_h = new int[NUM_OF_ARCHPROP];
@@ -268,7 +268,7 @@ TEST_CASE("Print_Out_Properties") {
   std::cout << std::setw(w) << "pageableMemoryAccessUsesHostPageTables: "
             << properties.pageableMemoryAccessUsesHostPageTables << "\n";
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   std::cout << std::setw(w) << "gcnArch: " << properties.gcnArch << "\n";
   std::cout << std::setw(w) << "gcnArchName: " << std::string(properties.gcnArchName, 256) << "\n";
   std::cout << std::setw(w) << "asicRevision: " << properties.asicRevision << "\n";

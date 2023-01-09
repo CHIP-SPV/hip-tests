@@ -84,7 +84,7 @@ TEST_CASE("Unit_hipGraphAddKernelNode_Negative") {
     ret = hipGraphAddKernelNode(&kNode, graph, nullptr, 0, &kNodeParams);
     REQUIRE(hipErrorInvalidValue == ret);
   }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 // On Cuda setup this test case getting failed
   SECTION("Try adding kernel node after destroy the already created graph") {
     kNodeParams.kernelParams = reinterpret_cast<void **>(kernelArgs);

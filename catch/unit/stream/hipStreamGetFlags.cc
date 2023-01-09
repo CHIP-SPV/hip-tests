@@ -52,7 +52,7 @@ TEST_CASE("Unit_hipStreamGetFlags_Negative") {
   HIP_CHECK(hipStreamCreate(&validStream));
 
   SECTION("Nullptr Stream && Valid Flags") { /* EXSWCPHIPT-17 */
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     HIP_CHECK_ERROR(hipStreamGetFlags(nullptr, &flags), hipErrorInvalidValue);
 #elif HT_NVIDIA
     HIP_CHECK(hipStreamGetFlags(nullptr, &flags));
@@ -66,7 +66,7 @@ TEST_CASE("Unit_hipStreamGetFlags_Negative") {
   HIP_CHECK(hipStreamDestroy(validStream));
 }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 /**
  * Test flag value when streams created with CUMask.
  */

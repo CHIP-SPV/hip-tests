@@ -1425,7 +1425,7 @@ TEST_CASE("Unit_deviceAllocation_New_MulKernels_MulThreads") {
   }
 }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 // Scenarios Unit_deviceAllocation_Malloc_SingKernels_MulThreads and
 // are failing on NVIDIA platform.
 /**

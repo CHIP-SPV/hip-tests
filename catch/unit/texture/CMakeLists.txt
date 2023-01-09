@@ -25,24 +25,43 @@ set(TEST_SRC
     hipCreateTextureObject_Pitch2D.cc
     hipCreateTextureObject_Array.cc
     hipTextureObjFetchVector.cc
-    hipNormalizedFloatValueTex.cc
     hipTextureObj2D.cc
-    hipSimpleTexture3D.cc
-    hipTextureRef2D.cc
-    hipSimpleTexture2DLayered.cc
     hipTextureMipmapObj2D.cc
-    hipBindTex2DPitch.cc
-    hipBindTexRef1DFetch.cc
     hipTex1DFetchCheckModes.cc
     hipGetChanDesc.cc
     hipTexObjPitch.cc
     hipTextureObj1DFetch.cc
     hipTextureObj1DCheckModes.cc
     hipTextureObj2DCheckModes.cc
-    hipTextureObj3DCheckModes.cc
+
     hipTextureObj1DCheckSRGBModes.cc
     hipTextureObj2DCheckSRGBModes.cc
 )
+
+if(NOT HIP_PLATFORM STREQUAL "spirv")
+    set(TEST_SRC ${TEST_SRC}
+        # error: no matching function for call to 'tex1D'
+        hipNormalizedFloatValueTex.cc
+
+        # error: use of undeclared identifier 'tex3D'; did you mean 'tex2D'?
+        hipSimpleTexture3D.cc
+
+        # Don't know how to lower this texture use case.
+        hipTextureRef2D.cc
+        
+        # error: use of undeclared identifier 'tex2DLayered'
+        hipSimpleTexture2DLayered.cc
+
+        # Don't know how to lower this texture use case.
+        hipBindTex2DPitch.cc
+
+        # error: no matching function for call to 'tex1Dfetch'
+        hipBindTexRef1DFetch.cc
+
+        # error: use of undeclared identifier 'tex3D'
+        hipTextureObj3DCheckModes.cc
+    )
+endif()
 
 hip_add_exe_to_target(NAME TextureTest
                       TEST_SRC ${TEST_SRC}

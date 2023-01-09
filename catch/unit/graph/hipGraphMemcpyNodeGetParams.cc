@@ -112,7 +112,7 @@ static bool compareHipPitchedPtr(hipPitchedPtr hpPtr1, hipPitchedPtr hpPtr2) {
   if ((reinterpret_cast<int *>(hpPtr1.ptr) ==
        reinterpret_cast<int *>(hpPtr2.ptr))
        && (hpPtr1.pitch == hpPtr2.pitch)
-       #if HT_AMD
+       #if HT_AMD || HT_SPIRV
        && (hpPtr1.xsize == hpPtr2.xsize)
        /* xsize check below is disabled on nvidia as xsize value
         * is not being updated properly due to issue with CUDA api */

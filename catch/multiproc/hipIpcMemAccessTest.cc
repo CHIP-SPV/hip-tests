@@ -169,7 +169,7 @@ TEST_CASE("Unit_hipIpcMemAccess_ParameterValidation") {
 
   HIP_CHECK(hipMalloc(&Ad, 1024));
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   // Test is disabled for nvidia as api resulting in seg fault.
   SECTION("Get mem handle with handle as nullptr") {
     ret = hipIpcGetMemHandle(nullptr, Ad);
@@ -202,7 +202,7 @@ TEST_CASE("Unit_hipIpcMemAccess_ParameterValidation") {
                                            hipIpcMemLazyEnablePeerAccess);
     REQUIRE((ret == hipErrorInvalidValue || ret == hipErrorInvalidDevicePointer));
   }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   // Test is disabled for nvidia as api not returning expected value.
   SECTION("Open mem handle with flags as random value") {
     constexpr unsigned int flags = 123;

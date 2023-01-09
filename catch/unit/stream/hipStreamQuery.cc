@@ -88,7 +88,7 @@ TEST_CASE("Unit_hipStreamQuery_WithUninitializedStream") {
 }
 #endif
 
-#if HT_AMD /* Disabled because frequency based wait is timing out on nvidia platforms */
+#if HT_AMD || HT_SPIRV /* Disabled because frequency based wait is timing out on nvidia platforms */
 
 /**
  * @brief Check that submitting work to a stream sets the status of the nullStream to

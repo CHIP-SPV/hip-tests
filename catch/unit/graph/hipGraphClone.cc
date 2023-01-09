@@ -271,7 +271,7 @@ in each thread and executes the cloned graph
 hipGraphClone is failing in CUDA in multi threaded
 scenario so excluded for nvidia
 */
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_hipGraphClone_MultiThreaded") {
   constexpr size_t N = 1024;
   constexpr size_t Nbytes = N * sizeof(int);

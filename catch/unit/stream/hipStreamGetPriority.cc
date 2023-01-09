@@ -123,7 +123,7 @@ TEST_CASE("Unit_hipStreamGetPriority_stream_priority") {
   HIP_CHECK(hipStreamDestroy(stream));
 }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 /**
  * Create stream with CUMask and check priority is returned as expected.
  */

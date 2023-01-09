@@ -30,7 +30,7 @@ THE SOFTWARE.
  *
  */
 TEST_CASE("Unit_hipDeviceGetP2PAttribute_Basic") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HipTest::HIP_SKIP_TEST("EXSWCPHIPT-119");
   return;
 #else
@@ -69,7 +69,7 @@ TEST_CASE("Unit_hipDeviceGetP2PAttribute_Basic") {
  *
  */
 TEST_CASE("Unit_hipDeviceGetP2PAttribute_Negative") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HipTest::HIP_SKIP_TEST("EXSWCPHIPT-122");
   return;
 #else

@@ -84,7 +84,7 @@ TEST_CASE("Unit_hipGraphExecKernelNodeSetParams_Negative") {
     ret = hipGraphExecKernelNodeSetParams(graphExec, nullptr, &kNodeParams);
     REQUIRE(hipErrorInvalidValue == ret);
   }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   /* NodeParams null check is disabled on Nvedia as
    * this call gives SIGSEGV error in CUDA setup */
   SECTION("Pass NodeParams as nullptr") {

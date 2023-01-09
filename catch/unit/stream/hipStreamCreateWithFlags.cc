@@ -54,7 +54,7 @@ TEST_CASE("Unit_hipStreamCreateWithFlags_Default") {
 
 // a stream will default to blocking the null stream, but will not block the null stream when
 // created with hipStreamNonBlocking
-#if HT_AMD /* Disabled because frequency based wait is timing out on nvidia platforms */
+#if HT_AMD || HT_SPIRV /* Disabled because frequency based wait is timing out on nvidia platforms */
 TEST_CASE("Unit_hipStreamCreateWithFlags_DefaultStreamInteraction") {
   const hipStream_t defaultStream = GENERATE(static_cast<hipStream_t>(nullptr), hipStreamPerThread);
   const unsigned int flagUnderTest = GENERATE(hipStreamDefault, hipStreamNonBlocking);

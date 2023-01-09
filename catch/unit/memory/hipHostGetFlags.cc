@@ -40,7 +40,7 @@ std::vector<unsigned int> FlagPart1Vec{hipHostMallocDefault,
                                        hipHostMallocMapped,
                                        hipHostMallocMapped | hipHostMallocWriteCombined,
                                        hipHostMallocWriteCombined};
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 // For cases where flags from FlagPart1Vec are not used,
 // hipHostMallocDefault is the default on AMD
 // and hipHostMallocMapped on Nvidia

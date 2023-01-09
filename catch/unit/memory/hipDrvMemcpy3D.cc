@@ -543,7 +543,7 @@ TEST_CASE("Unit_hipDrvMemcpy3D_ExtentValidation") {
   memcpy3d.Extent_Validation();
 }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 /* This testcase verifies H2D copy in device context
 change scenario for hipDrvMemcpy3D API */
 TEST_CASE("Unit_hipDrvMemcpy3D_H2DDeviceContextChange") {

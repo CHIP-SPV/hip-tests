@@ -308,7 +308,7 @@ TEST_CASE("Unit_hipIpcEventHandle_ParameterValidation") {
   hipError_t ret;
   HIP_CHECK(hipEventCreateWithFlags(&event,
                              hipEventDisableTiming | hipEventInterprocess));
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   // Test disabled for nvidia due to segfault with cuda api
   SECTION("Get event handle with eventHandle(nullptr)") {
     ret = hipIpcGetEventHandle(nullptr, event);

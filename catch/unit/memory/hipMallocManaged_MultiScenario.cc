@@ -231,7 +231,7 @@ TEST_CASE("Unit_hipMallocManaged_OverSubscription") {
   // ToDo: In case of HMM, memory over-subscription is allowed.  Hence, relook
   // into how out of memory can be tested.
   // Demanding more mem size than available
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HIP_CHECK_ERROR(hipMallocManaged(&A, (free + 1), hipMemAttachGlobal), hipErrorOutOfMemory);
 #endif
 }
@@ -254,7 +254,7 @@ TEST_CASE("Unit_hipMallocManaged_Negative") {
   // With size(0), api expected to return error code (or)
   // reset ptr while returning success (to accommodate cuda 11.2 api behavior).
   SECTION("size 0 with flag hipMemAttachGlobal") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     HIP_CHECK_ERROR(hipMallocManaged(&A, 0, hipMemAttachGlobal), hipErrorInvalidValue);
 #else
     HIP_CHECK(hipMallocManaged(&A, 0, hipMemAttachGlobal));
@@ -272,7 +272,7 @@ TEST_CASE("Unit_hipMallocManaged_Negative") {
   // With size(0), api expected to return error code (or)
   // reset ptr while returning success (to accommodate cuda 11.2 api behavior).
   SECTION("size 0 with flag hipMemAttachHost") {
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     HIP_CHECK_ERROR(hipMallocManaged(&A, 0, hipMemAttachHost), hipErrorInvalidValue);
 #else
     HIP_CHECK(hipMallocManaged(&A, 0, hipMemAttachHost));

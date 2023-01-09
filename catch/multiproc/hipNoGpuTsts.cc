@@ -28,7 +28,7 @@ THE SOFTWARE.
 #include <sys/wait.h>
 
 // Common Definitions and Macros
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   static const char* visibility_env_var = "HIP_VISIBLE_DEVICES";
 #else
   static const char* visibility_env_var = "CUDA_VISIBLE_DEVICES";
@@ -154,7 +154,7 @@ static bool NoGpuTst_hipDeviceGetByPCIBusId() {
 static bool NoGpuTst_hipDeviceTotalMem() {
   bool passed = false;
   hipError_t err, err_exp;
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   err_exp = hipErrorNoDevice;
 #else
   err_exp = hipErrorNotInitialized;
@@ -244,7 +244,7 @@ static bool NoGpuTst_hipStreamGetFlags() {
   }
   return passed;
 }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 // No GPU test case for hipExtStreamCreateWithCUMask
 static bool NoGpuTst_hipExtStreamCreateWithCUMask() {
   bool passed = false;
@@ -382,7 +382,7 @@ static bool NoGpuTst_hipPointerGetAttributes() {
   }
   return passed;
 }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 // No GPU test case for hipExtMallocWithFlags
 static bool NoGpuTst_hipExtMallocWithFlags() {
   bool passed = false;
@@ -448,7 +448,7 @@ static bool NoGpuTst_hipMemcpyWithStream() {
   return passed;
 }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 // No GPU test case for hipMallocMipmappedArray
 static bool NoGpuTst_hipMallocMipmappedArray() {
   bool passed = false;
@@ -548,7 +548,7 @@ static bool NoGpuTst_hipMemcpy() {
 static bool NoGpuTst_hipMemAllocPitch() {
   bool passed = false;
   hipError_t err, err_exp;
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   err_exp = hipErrorNoDevice;
 #else
   err_exp = hipErrorNotInitialized;
@@ -630,7 +630,7 @@ static bool NoGpuTst_hipDeviceDisablePeerAccess() {
 static bool NoGpuTst_hipDeviceGet() {
   bool passed = false;
   hipError_t err, err_exp;
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   err_exp = hipErrorNoDevice;
 #else
   err_exp = hipErrorNotInitialized;
@@ -650,7 +650,7 @@ static bool NoGpuTst_hipDeviceGet() {
 static bool NoGpuTst_hipDeviceComputeCapability() {
   bool passed = false;
   hipError_t err, err_exp;
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   err_exp = hipErrorNoDevice;
 #else
   err_exp = hipErrorNotInitialized;
@@ -671,7 +671,7 @@ static bool NoGpuTst_hipDeviceComputeCapability() {
 static bool NoGpuTst_hipDeviceGetName() {
   bool passed = false;
   hipError_t err, err_exp;
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   err_exp = hipErrorNoDevice;
 #else
   err_exp = hipErrorNotInitialized;
@@ -719,7 +719,7 @@ static bool NoGpuTst_hipChooseDevice() {
   }
   return passed;
 }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 // No GPU test for hipExtGetLinkTypeAndHopCount() API
 static bool NoGpuTst_hipExtGetLinkTypeAndHopCount() {
   bool passed = false;
@@ -920,7 +920,7 @@ static bool NoGpuTst_hipModuleLoad() {
   hipError_t err;
   hipModule_t module;
   err = hipModuleLoad(&module, "dummy_kernel.code");
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   if (err == hipErrorNoDevice) {
     passed = true;
   }
@@ -961,7 +961,7 @@ static bool NoGpuTst_hipModuleLoadData() {
   std::vector<char> buffer(fsize);
   if (file.read(buffer.data(), fsize)) {
     err = hipModuleLoadData(&module, &buffer[0]);
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     if (err == hipErrorNoDevice) {
       passed = true;
     }
@@ -991,7 +991,7 @@ static bool NoGpuTst_hipModuleLoadDataEx() {
   std::vector<char> buffer(fsize);
   if (file.read(buffer.data(), fsize)) {
     err = hipModuleLoadDataEx(&module, &buffer[0], 0, nullptr, nullptr);
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     if (err == hipErrorNoDevice) {
       passed = true;
     }
@@ -1060,7 +1060,7 @@ static bool NoGpuTst_hipLaunchCooperativeKernelMultiDevice() {
 }
 
 // No GPU test for hipExtLaunchMultiKernelMultiDevice() API
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 static bool NoGpuTst_hipExtLaunchMultiKernelMultiDevice() {
   bool passed = false;
   hipError_t err;
@@ -1233,7 +1233,7 @@ static bool NoGpuTst_hipMallocArray() {
   }
   return passed;
 }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 // No GPU test for hipMipmappedArrayCreate()
 static bool NoGpuTst_hipMipmappedArrayCreate() {
   bool passed = false;
@@ -1428,7 +1428,7 @@ TEST_CASE("Unit_NoGpuTst_hipStreamSynchronize") {
 TEST_CASE("Unit_NoGpuTst_hipStreamGetFlags") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipStreamGetFlags));
 }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_NoGpuTst_hipExtStreamCreateWithCUMask") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipExtStreamCreateWithCUMask));
 }
@@ -1464,7 +1464,7 @@ TEST_CASE("Unit_NoGpuTst_hipDeviceSetSharedMemConfig") {
 TEST_CASE("Unit_NoGpuTst_hipPointerGetAttributes") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipPointerGetAttributes));
 }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_NoGpuTst_hipExtMallocWithFlags") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipExtMallocWithFlags));
 }
@@ -1484,7 +1484,7 @@ TEST_CASE("Unit_NoGpuTst_hipMemcpyWithStream") {
 TEST_CASE("Unit_NoGpuTst_hipMallocArray") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipMallocArray));
 }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_NoGpuTst_hipMallocMipmappedArray") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipMallocMipmappedArray));
 }
@@ -1549,7 +1549,7 @@ TEST_CASE("Unit_NoGpuTst_hipChooseDevice") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipChooseDevice));
 }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_NoGpuTst_hipExtGetLinkTypeAndHopCount") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipExtGetLinkTypeAndHopCount));
 }
@@ -1627,7 +1627,7 @@ TEST_CASE("Unit_NoGpuTst_hipLaunchCooperativeKernelMultiDevice") {
   REQUIRE(NoGpuTst_Common(
           NoGpuTst_hipLaunchCooperativeKernelMultiDevice));
 }
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_NoGpuTst_hipExtLaunchMultiKernelMultiDevice") {
   REQUIRE(NoGpuTst_Common(
           NoGpuTst_hipExtLaunchMultiKernelMultiDevice));
@@ -1664,7 +1664,7 @@ TEST_CASE("Unit_NoGpuTst_hipMallocPitch") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipMallocPitch));
 }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_NoGpuTst_hipMipmappedArrayCreate") {
   REQUIRE(NoGpuTst_Common(NoGpuTst_hipMipmappedArrayCreate));
 }

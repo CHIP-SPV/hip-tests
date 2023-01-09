@@ -232,7 +232,7 @@ TEST_CASE("Unit_hipMemAdvise_NegtveTsts") {
     std::string str;
     HIP_CHECK(hipGetDeviceCount(&NumDevs));
     HIP_CHECK(hipMallocManaged(&Hmm, MEM_SIZE * 2, hipMemAttachGlobal));
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     // Passing invalid value(99) device param
     IfTestPassed &= CheckError(hipMemAdvise(Hmm, MEM_SIZE * 2,
                                hipMemAdviseSetReadMostly, 99), __LINE__);
@@ -448,7 +448,7 @@ TEST_CASE("Unit_hipMemAdvise_TstFlgOverrideEffect") {
 
 // The following function tests if peers can set hipMemAdviseSetAccessedBy flag
 // on HMM memory prefetched on each of the other gpus
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_hipMemAdvise_TstAccessedByPeer") {
   int MangdMem = HmmAttrPrint();
   if (MangdMem == 1) {
@@ -860,7 +860,7 @@ TEST_CASE("Unit_hipMemAdvise_ReadMosltyMgpuTst") {
                            hipMemAdviseSetReadMostly, 0));
     dim3 dimBlock(blockSize, 1, 1);
     dim3 dimGrid((NumElms + blockSize -1)/blockSize, 1, 1);
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
     SECTION("Launch Kernel on all other gpus") {
       // launching kernel from each one of the gpus
       for (int i = 1; i < Ngpus; ++i) {

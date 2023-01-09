@@ -564,7 +564,7 @@ TEST_CASE("Unit_hipDrvMemcpy3DAsync_ExtentValidation") {
 
 /* This testcase verifies H2D copy in device context
 change scenario for hipDrvMemcpy3DAsync API */
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 TEST_CASE("Unit_hipDrvMemcpy3DAsync_H2DDeviceContextChange") {
   int numDevices = 0;
   HIP_CHECK(hipGetDeviceCount(&numDevices));

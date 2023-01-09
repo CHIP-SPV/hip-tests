@@ -177,7 +177,7 @@ TEST_CASE("Unit_hipGetDeviceAttribute_CheckAttrValues") {
                           hipDeviceAttributeCooperativeMultiDeviceLaunch,
                           props.cooperativeMultiDeviceLaunch));
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   HIP_CHECK(test_hipDeviceGetHdpAddress(deviceId,
                                      hipDeviceAttributeHdpMemFlushCntl,
                                      props.hdpMemFlushCntl));
@@ -240,7 +240,7 @@ TEST_CASE("Unit_hipGetDeviceAttribute_CheckAttrValues") {
  * Validate the hipDeviceAttributeFineGrainSupport property in AMD.
  */
 #ifdef __linux__
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 #define COMMAND_LEN 256
 #define BUFFER_LEN 512
 
@@ -480,7 +480,7 @@ constexpr AttributeToStringMap<34> kCudaOnlyAttributes{
      {hipDeviceAttributeUuid, "hipDeviceAttributeUuid"}}};
 #endif
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
 constexpr AttributeToStringMap<17> kAmdOnlyAttributes{{
     {hipDeviceAttributeClockInstructionRate, "hipDeviceAttributeClockInstructionRate"},
     {hipDeviceAttributeArch, "hipDeviceAttributeArch"},
@@ -546,7 +546,7 @@ TEST_CASE("Print_Out_Attributes") {
   printAttributes(kCudaOnlyAttributes, device);
 #endif
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   std::cout << "\nAMD only\n";
   std::cout << std::setw(kW)
             << "--------------------------------------------------------------------------------"

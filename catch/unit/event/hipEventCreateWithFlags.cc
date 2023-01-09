@@ -28,7 +28,7 @@ Unit_hipEventCreateWithFlags_Positive - Test simple event creation with hipEvent
 
 TEST_CASE("Unit_hipEventCreateWithFlags_Positive") {
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   const unsigned int flagUnderTest = GENERATE(hipEventDefault, hipEventBlockingSync, hipEventDisableTiming, hipEventInterprocess | hipEventDisableTiming, hipEventReleaseToDevice, hipEventReleaseToSystem);
 #else
   // On Non-AMD platforms hipEventReleaseToDevice / hipEventReleaseToSystem are not defined

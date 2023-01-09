@@ -320,7 +320,7 @@ TEST_CASE("Unit_hipPointerGetAttributes_MultiThread") {
 #endif
 
 TEST_CASE("Unit_hipPointerGetAttributes_Negative") {
-#if HT_AMD  // Nvidia crashed in hipPointerGetAttributes on nullptr
+#if HT_AMD || HT_SPIRV  // Nvidia crashed in hipPointerGetAttributes on nullptr
   SECTION("Invalid Attributes Pointer") {
     int* dPtr{nullptr};
     HIP_CHECK(hipMalloc(&dPtr, sizeof(int)));

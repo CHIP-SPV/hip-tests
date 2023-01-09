@@ -73,7 +73,7 @@ TEST_CASE("Unit_hipDrvPtrGetAttributes_Negative") {
               reinterpret_cast<hipDeviceptr_t>(A_d)) == hipErrorInvalidValue);
   }
 
-#if HT_AMD
+#if HT_AMD || HT_SPIRV
   SECTION("Passing nullptr to device Pointer") {
     hipDeviceptr_t ptr = 0;
     REQUIRE(hipDrvPointerGetAttributes(2, attributes, data,
