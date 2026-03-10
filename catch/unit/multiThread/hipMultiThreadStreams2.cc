@@ -128,6 +128,12 @@ void run(size_t size, hipStream_t stream1, hipStream_t stream2) {
     HIPCHECK(hipFree(Ddd));
 }
 TEST_CASE("Unit_hipMultiThreadStreams2") {
+    hipDeviceProp_t prop;
+    HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+    if (!prop.canMapHostMemory) {
+      HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+      return;
+    }
     int iterations = 100;
 
     hipStream_t stream[3];

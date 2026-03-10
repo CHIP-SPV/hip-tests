@@ -188,6 +188,12 @@ void testEventMGpuMThreads(int nThreads = 1) {
 }
 
 TEST_CASE("Unit_hipEventMGpuMThreads_1") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   testEventMGpuMThreads(1);
 }
 

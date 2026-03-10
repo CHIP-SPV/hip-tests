@@ -42,6 +42,12 @@ ovldClassKernel(bool* result_ecd){
 }
 
 TEST_CASE("Unit_hipClassKernel_Overload_Override") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   bool *result_ecd, *result_ech;
   result_ech = AllocateHostMemory();
   result_ecd = AllocateDeviceMemory();
@@ -79,6 +85,12 @@ friendClassKernel(bool* result_ecd){
 }
 
 TEST_CASE("Unit_hipClassKernel_Friend") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   bool *result_ecd;
   result_ecd = AllocateDeviceMemory();
   hipLaunchKernelGGL(friendClassKernel,
@@ -99,6 +111,12 @@ emptyClassKernel(bool* result_ecd) {
 }
 
 TEST_CASE("Unit_hipClassKernel_Empty") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   bool *result_ecd, *result_ech;
   result_ech = AllocateHostMemory();
   result_ecd = AllocateDeviceMemory();
@@ -126,6 +144,12 @@ __global__ void
 }
 
 TEST_CASE("Unit_hipClassKernel_BSize") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   bool *result_ecd, *result_ech;
   result_ech = AllocateHostMemory();
   result_ecd = AllocateDeviceMemory();
@@ -150,6 +174,12 @@ sizeClassKernel(bool* result_ecd) {
 }
 
 TEST_CASE("Unit_hipClassKernel_Size") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
     bool *result_ecd, *result_ech;
   result_ech = AllocateHostMemory();
   result_ecd = AllocateDeviceMemory();
@@ -176,6 +206,12 @@ __global__ void
  }
 
 TEST_CASE("Unit_hipClassKernel_Virtual") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   bool *result_ecd, *result_ech;
   result_ech = AllocateHostMemory();
   result_ecd = AllocateDeviceMemory();

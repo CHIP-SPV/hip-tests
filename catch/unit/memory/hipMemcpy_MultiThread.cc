@@ -307,6 +307,12 @@ void Thread_func(bool &ret_val) {
 
 
 TEST_CASE("Unit_hipMemcpy_MultiThread-AllAPIs") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   std::thread Thrd[NUM_THREADS];
   bool ret_val[NUM_THREADS];
   for (int i = 0; i < NUM_THREADS; i++)

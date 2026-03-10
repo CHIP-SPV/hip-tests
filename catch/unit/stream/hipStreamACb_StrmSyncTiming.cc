@@ -81,6 +81,12 @@ static void HIPRT_CB Callback1(hipStream_t stream, hipError_t status, void* user
  multiple Threads.
  */
 TEST_CASE("Unit_hipStreamAddCallback_StrmSyncTiming") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   float *A_d, *C_d;
   size_t Nbytes = N_elmts * sizeof(float);
 

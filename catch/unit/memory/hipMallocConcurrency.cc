@@ -407,6 +407,12 @@ TEST_CASE("Unit_hipMalloc_AllocateAndPoolBuffers") {
  * multiple threads and regress the api.
  */
 TEST_CASE("Unit_hipMalloc_Multithreaded_MultiGPU") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   std::vector<std::thread> threadlist;
   int devCnt;
 

@@ -42,6 +42,12 @@ Scenario : App pushes Async task(s) into hipStreamPerThread and did not wait for
 Watch out : Incomplete task in hipStreamPerThread should not cause any crash due to thread exit.
  */
 TEST_CASE("Unit_hipStreamPerThread_MultiThread") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   constexpr unsigned int MAX_THREAD_CNT = 10;
   std::vector<std::thread> threads(MAX_THREAD_CNT);
 

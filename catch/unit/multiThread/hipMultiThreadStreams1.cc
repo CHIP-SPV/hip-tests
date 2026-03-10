@@ -122,6 +122,12 @@ TEST_CASE("Unit_hipMultiThreadStreams1_AsyncSync") {
 }
 
 TEST_CASE("Unit_hipMultiThreadStreams1_AsyncAsync") {
+    hipDeviceProp_t prop;
+    HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+    if (!prop.canMapHostMemory) {
+      HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+      return;
+    }
     hipStream_t stream0, stream1;
     HIPCHECK(hipStreamCreate(&stream0));
     HIPCHECK(hipStreamCreate(&stream1));
@@ -134,6 +140,12 @@ TEST_CASE("Unit_hipMultiThreadStreams1_AsyncAsync") {
     HIPCHECK(hipStreamDestroy(stream1));
 }
 TEST_CASE("Unit_hipMultiThreadStreams1_AsyncSame") {
+    hipDeviceProp_t prop;
+    HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+    if (!prop.canMapHostMemory) {
+      HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+      return;
+    }
     hipStream_t stream;
     HIPCHECK(hipStreamCreate(&stream));
 

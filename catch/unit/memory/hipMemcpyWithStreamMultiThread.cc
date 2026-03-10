@@ -619,6 +619,12 @@ void HipMemcpyWithStreamMultiThreadtests::TestkindHtoH(bool &val_res) {
 }
 
 TEST_CASE("Unit_hipMemcpyWithStream_MultiThread") {
+  hipDeviceProp_t prop;
+  HIP_CHECK(hipGetDeviceProperties(&prop, 0));
+  if (!prop.canMapHostMemory) {
+    HipTest::HIP_SKIP_TEST("Host memory mapping not supported");
+    return;
+  }
   const auto Threadcount{10};
   bool ret_val[Threadcount];
   std::thread th[Threadcount];
