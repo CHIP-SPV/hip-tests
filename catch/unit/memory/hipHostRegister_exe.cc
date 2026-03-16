@@ -33,7 +33,7 @@ THE SOFTWARE.
 
 static bool UNSETENV(std::string var) {
   int result = -1;
-#ifdef __unix__
+#ifndef _WIN32
   result = unsetenv(var.c_str());
 #else
   result = _putenv((var + '=').c_str());
@@ -43,7 +43,7 @@ static bool UNSETENV(std::string var) {
 
 static bool SETENV(std::string var, std::string value, int overwrite) {
   int result = -1;
-#ifdef __unix__
+#ifndef _WIN32
   result = setenv(var.c_str(), value.c_str(), overwrite);
 #else
   result = _putenv((var + '=' + value).c_str());

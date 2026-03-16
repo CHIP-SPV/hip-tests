@@ -33,7 +33,7 @@ This testcase verifies following scenarios
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#else
+#elif defined(__linux__)
 #include "sys/types.h"
 #include "sys/sysinfo.h"
 #endif
@@ -177,7 +177,7 @@ void memcpytest2_get_host_memory(size_t *free, size_t *total) {
   *free = static_cast<size_t>(0.4 * status.ullAvailPhys);
   *total = static_cast<size_t>(0.4 * status.ullTotalPhys);
 }
-#else
+#elif defined(__linux__)
 struct sysinfo memInfo;
 void memcpytest2_get_host_memory(size_t  *free, size_t *total) {
   sysinfo(&memInfo);
@@ -187,6 +187,11 @@ void memcpytest2_get_host_memory(size_t  *free, size_t *total) {
   uint64_t totalPhysMem = memInfo.totalram;
   totalPhysMem *= memInfo.mem_unit;
   *total = totalPhysMem;
+}
+#else
+void memcpytest2_get_host_memory(size_t *free, size_t *total) {
+  *free = static_cast<size_t>(4ULL * 1024 * 1024 * 1024);
+  *total = static_cast<size_t>(8ULL * 1024 * 1024 * 1024);
 }
 #endif
 

@@ -129,7 +129,7 @@ find_package(Catch2 REQUIRED
     PATH_SUFFIXES
     Catch2/cmake/Catch2
 )
-include(Catch)
+include(${CMAKE_CURRENT_LIST_DIR}/external/Catch2/cmake/Catch2/Catch.cmake)
 include(CTest)
 
 # path used for generating the *_include.cmake file

@@ -42,7 +42,7 @@ __host__ static void double_precision_math_functions() {
     erf(0.0);
     erfc(0.0);
     exp(0.0);
-    #ifdef __unix__
+    #if !defined(_WIN32) && !defined(__APPLE__)
     exp10(0.0);
     #endif
     exp2(0.0);
@@ -60,7 +60,7 @@ __host__ static void double_precision_math_functions() {
     std::isfinite(0.0);
     std::isinf(0.0);
     std::isnan(0.0);
-    #ifdef __unix__
+    #ifndef _WIN32
     j0(0.0);
     j1(0.0);
     jn(-1.0, 1.0);
@@ -101,7 +101,7 @@ __host__ static void double_precision_math_functions() {
     tanh(0.0);
     tgamma(2.0);
     trunc(0.0);
-    #ifdef __unix__
+    #ifndef _WIN32
     y0(1.0);
     y1(1.0);
     yn(1, 1.0);

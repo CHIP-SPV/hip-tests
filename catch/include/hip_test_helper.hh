@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 #ifdef __linux__
   #include <sys/sysinfo.h>
-#else
+#elif defined(_WIN32)
   #include <windows.h>
   #include <sysinfoapi.h>
 #endif
@@ -48,6 +48,8 @@ static inline size_t getMemoryAmount() {
   statex.dwLength = sizeof(statex);
   GlobalMemoryStatusEx(&statex);
   return (statex.ullAvailPhys / (1024 * 1024));  // MB
+#else
+  return 4096;  // Fallback: assume 4GB available
 #endif
 }
 

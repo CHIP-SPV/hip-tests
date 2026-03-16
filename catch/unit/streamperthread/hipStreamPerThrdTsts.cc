@@ -40,7 +40,7 @@ THE SOFTWARE.
   #include <Windows.h>
   #define sleep(x) _sleep(x)
 #endif
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
   #include <unistd.h>
   #include <sys/mman.h>
   #include <sys/wait.h>

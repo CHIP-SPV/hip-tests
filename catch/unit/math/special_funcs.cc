@@ -721,7 +721,7 @@ MATH_UNARY_KERNEL_DEF(y0)
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_y0f_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   double (*ref)(double) = y0;
 #elif _WIN64
   double (*ref)(double) = _y0;
@@ -748,7 +748,7 @@ TEST_CASE("Unit_Device_y0f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_y0_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   long double (*ref)(long double) = y0l;
 #elif _WIN64
   long double (*ref)(long double) = _y0l;
@@ -789,7 +789,7 @@ MATH_UNARY_KERNEL_DEF(y1)
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_y1f_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   double (*ref)(double) = y1;
 #elif _WIN64
   double (*ref)(double) = _y1;
@@ -816,7 +816,7 @@ TEST_CASE("Unit_Device_y1f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_y1_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   long double (*ref)(long double) = y1l;
 #elif _WIN64
   long double (*ref)(long double) = _y1l;
@@ -857,7 +857,7 @@ MATH_BESSEL_N_KERNEL_DEF(yn)
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_ynf_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   double (*ref)(int, double) = yn;
 #elif _WIN64
   double (*ref)(int, double) = _yn;
@@ -883,7 +883,7 @@ TEST_CASE("Unit_Device_ynf_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_yn_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   long double (*ref)(int, long double) = ynl;
 #elif _WIN64
   long double (*ref)(int, long double) = _ynl;
@@ -925,7 +925,7 @@ MATH_UNARY_KERNEL_DEF(j0)
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_j0f_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   double (*ref)(double) = j0;
 #elif _WIN64
   double (*ref)(double) = _j0;
@@ -954,7 +954,7 @@ TEST_CASE("Unit_Device_j0f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_j0_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   long double (*ref)(long double) = j0l;
 #elif _WIN64
   long double (*ref)(long double) = _j0l;
@@ -995,7 +995,7 @@ MATH_UNARY_KERNEL_DEF(j1)
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_j1f_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   double (*ref)(double) = j1;
 #elif _WIN64
   double (*ref)(double) = _j1;
@@ -1024,7 +1024,7 @@ TEST_CASE("Unit_Device_j1f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_j1_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   long double (*ref)(long double) = j1l;
 #elif _WIN64
   long double (*ref)(long double) = _j1l;
@@ -1065,7 +1065,7 @@ MATH_BESSEL_N_KERNEL_DEF(jn)
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_jnf_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   double (*ref)(int, double) = jn;
 #elif _WIN64
   double (*ref)(int, double) = _jn;
@@ -1091,7 +1091,7 @@ TEST_CASE("Unit_Device_jnf_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_jn_Accuracy_Limited_Positive") {
-#ifdef __unix__
+#ifndef _WIN32
   long double (*ref)(int, long double) = jnl;
 #elif _WIN64
   long double (*ref)(int, long double) = _jnl;

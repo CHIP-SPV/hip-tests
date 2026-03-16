@@ -24,7 +24,18 @@ THE SOFTWARE.
 #define _STRESSTEST_PRINTF_COMMON_H_
 
 #include <errno.h>
+#ifdef __linux__
 #include <error.h>
+#else
+#include <string.h>
+#include <stdarg.h>
+static inline void error(int status, int errnum, const char* fmt, ...) {
+  va_list ap; va_start(ap, fmt); vfprintf(stderr, fmt, ap); va_end(ap);
+  if (errnum) fprintf(stderr, ": %s", strerror(errnum));
+  fprintf(stderr, "\n");
+  if (status) exit(status);
+}
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

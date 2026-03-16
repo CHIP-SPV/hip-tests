@@ -41,7 +41,7 @@ __host__ static void single_precision_math_functions() {
     coshf(0.0f);
     erfcf(0.0f);
     erff(0.0f);
-    #ifdef __unix__
+    #if !defined(_WIN32) && !defined(__APPLE__)
     exp10f(0.0f);
     #endif
     exp2f(0.0f);
@@ -60,7 +60,7 @@ __host__ static void single_precision_math_functions() {
     std::isfinite(0.0f);
     std::isinf(0.0f);
     std::isnan(0.0f);
-    #ifdef __unix__
+    #if !defined(_WIN32) && !defined(__APPLE__)
     j0f(0.0f);
     j1f(0.0f);
     jnf(-1.0f, 1.0f);
@@ -91,7 +91,7 @@ __host__ static void single_precision_math_functions() {
     scalblnf(0.0f, 1);
     scalbnf(0.0f, 1);
     std::signbit(1.0f);
-    #ifdef __unix__
+    #if !defined(_WIN32) && !defined(__APPLE__)
     sincosf(0.0f, &fX, &fY);
     #endif
     sinf(0.0f);
@@ -101,7 +101,7 @@ __host__ static void single_precision_math_functions() {
     tanhf(0.0f);
     tgammaf(2.0f);
     truncf(0.0f);
-    #ifdef __unix__
+    #if !defined(_WIN32) && !defined(__APPLE__)
     y0f(1.0f);
     y1f(1.0f);
     ynf(1, 1.0f);

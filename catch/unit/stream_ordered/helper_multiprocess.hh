@@ -87,7 +87,7 @@ int waitProcess(Process* process);
     exit(EXIT_FAILURE);                                                                            \
   }
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
 struct ipcHandle_st {
   int socket;
   char* socketName;
