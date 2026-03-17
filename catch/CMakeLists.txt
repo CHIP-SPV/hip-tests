@@ -16,6 +16,8 @@ elseif(HIP_PLATFORM STREQUAL "nvidia")
     if(DEFINED HIP_COMPILER AND NOT HIP_COMPILER STREQUAL "nvcc")
         message(FATAL_ERROR "Unexpected HIP_COMPILER: ${HIP_COMPILER} is set for HIP_PLATFORM:nvidia")
     endif()
+elseif(HIP_PLATFORM STREQUAL "spirv")
+    # chipStar SPIR-V backend
 else()
     message(FATAL_ERROR "Unexpected HIP_PLATFORM: " ${HIP_PLATFORM})
 endif()
