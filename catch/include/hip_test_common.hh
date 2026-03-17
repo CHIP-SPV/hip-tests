@@ -264,6 +264,9 @@ template <typename... Typenames, typename K, typename Dim, typename... Args>
 void launchKernel(K kernel, Dim numBlocks, Dim numThreads, std::uint32_t memPerBlock,
                   hipStream_t stream, Args&&... packedArgs) {
 #ifndef RTC_TESTING
+  // chipStar adds __attribute__((device_kernel)) to kernel types, which
+  // prevents getExpectedArgs from matching; skip validation on SPIRV platform.
+#ifndef __HIP_PLATFORM_SPIRV__
   validateArguments(kernel, packedArgs...);
   kernel<<<numBlocks, numThreads, memPerBlock, stream>>>(std::forward<Args>(packedArgs)...);
 #else

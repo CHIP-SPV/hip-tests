@@ -39,6 +39,9 @@ THE SOFTWARE.
 #elif defined(__linux__)
 #define HT_WIN 0
 #define HT_LINUX 1
+#elif defined(__APPLE__)
+#define HT_WIN 0
+#define HT_LINUX 1  // treat macOS as linux-like for test purposes
 #else
 #error "OS not recognized"
 #endif
@@ -50,6 +53,8 @@ THE SOFTWARE.
 #elif defined(__HIP_PLATFORM_NVCC__) || defined(__HIP_PLATFORM_NVIDIA__)
 #define HT_AMD 0
 #define HT_NVIDIA 1
+#elif defined(__HIP_PLATFORM_SPIRV__)
+#define HT_AMD 1  // chipStar SPIR-V backend behaves like AMD for test purposes
 #else
 #error "Platform not recognized"
 #endif
@@ -124,7 +129,7 @@ class TestContext {
     if (!::getenv_s(&dstSize, dstBuf, MAX_LEN, var.c_str())) {
       return std::string(dstBuf);
     }
-    #elif defined(__linux__)
+    #elif defined(__linux__) || defined(__APPLE__)
     char* val = std::getenv(var.c_str());
     if (val != NULL) {
       return std::string(val);

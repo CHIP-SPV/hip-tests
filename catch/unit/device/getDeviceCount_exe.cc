@@ -26,20 +26,20 @@ THE SOFTWARE.
 
 bool UNSETENV(std::string var) {
   int result = -1;
-  #ifdef __unix__
-    result = unsetenv(var.c_str());
-  #else
+  #if defined(_WIN32) && !defined(__unix__)
     result = _putenv((var + '=').c_str());
+  #else
+    result = unsetenv(var.c_str());
   #endif
   return (result == 0) ? true: false;
 }
 
 bool SETENV(std::string var, std::string value, int overwrite) {
   int result = -1;
-  #ifdef __unix__
-    result = setenv(var.c_str(), value.c_str(), overwrite);
-  #else
+  #if defined(_WIN32) && !defined(__unix__)
     result = _putenv((var + '=' + value).c_str());
+  #else
+    result = setenv(var.c_str(), value.c_str(), overwrite);
   #endif
   return (result == 0) ? true: false;
 }
