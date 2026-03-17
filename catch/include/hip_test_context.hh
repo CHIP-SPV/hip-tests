@@ -135,8 +135,6 @@ class TestContext {
     if (val != NULL) {
       return std::string(val);
     }
-    #else
-    #error "OS not recognized"
     #endif
     return std::string("");
   }
