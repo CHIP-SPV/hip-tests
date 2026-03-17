@@ -51,7 +51,7 @@ if(UNIX)
     set(CMAKE_CXX_COMPILER "${HIP_PATH}/bin/hipcc")
     set(CMAKE_C_COMPILER "${HIP_PATH}/bin/hipcc")
     set(HIPCONFIG_EXECUTABLE "${HIP_PATH}/bin/hipconfig")
-    execute_process(COMMAND perl ${HIPCONFIG_EXECUTABLE} --version
+    execute_process(COMMAND ${HIPCONFIG_EXECUTABLE} --version
                     OUTPUT_VARIABLE HIP_VERSION
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
 else()
