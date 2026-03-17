@@ -55,6 +55,7 @@ THE SOFTWARE.
 #define HT_NVIDIA 1
 #elif defined(__HIP_PLATFORM_SPIRV__)
 #define HT_AMD 1  // chipStar SPIR-V backend behaves like AMD for test purposes
+#define HT_NVIDIA 0
 #else
 #error "Platform not recognized"
 #endif

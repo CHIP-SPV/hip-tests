@@ -268,6 +268,7 @@ void launchKernel(K kernel, Dim numBlocks, Dim numThreads, std::uint32_t memPerB
   // prevents getExpectedArgs from matching; skip validation on SPIRV platform.
 #ifndef __HIP_PLATFORM_SPIRV__
   validateArguments(kernel, packedArgs...);
+#endif
   kernel<<<numBlocks, numThreads, memPerBlock, stream>>>(std::forward<Args>(packedArgs)...);
 #else
   launchRTCKernel<Typenames...>(kernel, numBlocks, numThreads, memPerBlock, stream,

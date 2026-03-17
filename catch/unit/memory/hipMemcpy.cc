@@ -177,7 +177,7 @@ void memcpytest2_get_host_memory(size_t *free, size_t *total) {
   *free = static_cast<size_t>(0.4 * status.ullAvailPhys);
   *total = static_cast<size_t>(0.4 * status.ullTotalPhys);
 }
-#else
+#elif defined(__linux__)
 struct sysinfo memInfo;
 void memcpytest2_get_host_memory(size_t  *free, size_t *total) {
   sysinfo(&memInfo);
@@ -187,6 +187,12 @@ void memcpytest2_get_host_memory(size_t  *free, size_t *total) {
   uint64_t totalPhysMem = memInfo.totalram;
   totalPhysMem *= memInfo.mem_unit;
   *total = totalPhysMem;
+}
+#else
+// macOS fallback: use a conservative estimate
+void memcpytest2_get_host_memory(size_t *free, size_t *total) {
+  *free = (size_t)2 * 1024 * 1024 * 1024UL;   // 2 GB
+  *total = (size_t)4 * 1024 * 1024 * 1024UL;  // 4 GB
 }
 #endif
 
