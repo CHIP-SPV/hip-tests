@@ -18,7 +18,7 @@ THE SOFTWARE.
 */
 
 #include <hip_test_common.hh>
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
   #include <fcntl.h>
   #include <sys/mman.h>
   #include <sys/stat.h>
@@ -51,7 +51,7 @@ TEST_CASE("Unit_hipMemAdvise_MmapMem") {
                                   0));
   INFO("hipDeviceAttributeManagedMemory: " << managed);
   if (PageableMem == 1) {
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
     // For now this test is enabled only for linux platforms
     FILE *fptr;
     int NUM_ELMS = 212992;
