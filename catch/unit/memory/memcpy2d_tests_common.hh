@@ -42,7 +42,7 @@ void Memcpy2DDeviceToHostShell(F memcpy_func, const hipStream_t kernel_stream = 
   const size_t host_pitch = GENERATE_REF(device_alloc.width(), device_alloc.width() + 64);
   LinearAllocGuard<int> host_alloc(LinearAllocs::hipHostMalloc, host_pitch * rows);
 
-  const dim3 threads_per_block(32, 32);
+  const dim3 threads_per_block(32, std::max(1u, MaxThreadsPerBlock(1024) / 32));
   const dim3 blocks(cols / threads_per_block.x + 1, rows / threads_per_block.y + 1);
   Iota<<<blocks, threads_per_block>>>(device_alloc.ptr(), device_alloc.pitch(),
                                       device_alloc.width_logical(), device_alloc.height(), 1);
@@ -93,7 +93,7 @@ void Memcpy2DDeviceToDeviceShell(F memcpy_func, const hipStream_t kernel_stream 
   HIP_CHECK(hipSetDevice(src_device));
   LinearAllocGuard<int> host_alloc(LinearAllocs::hipHostMalloc, dst_alloc.width() * rows);
 
-  const dim3 threads_per_block(32, 32);
+  const dim3 threads_per_block(32, std::max(1u, MaxThreadsPerBlock(1024) / 32));
   const dim3 blocks(cols / threads_per_block.x + 1, rows / threads_per_block.y + 1);
   // Using dst_alloc width and height to set only the elements that will be copied over to
   // dst_alloc
@@ -477,7 +477,7 @@ void MemcpyParam2DArrayDeviceShell(F memcpy_func, const hipStream_t kernel_strea
   LinearAllocGuard3D<int> src_device(extent);
   LinearAllocGuard3D<int> dst_device(extent);
 
-  const dim3 threads_per_block(32, 32);
+  const dim3 threads_per_block(32, std::max(1u, MaxThreadsPerBlock(1024) / 32));
   const dim3 blocks(src_device.width_logical() / threads_per_block.x + 1,
                     src_device.height() / threads_per_block.y + 1, src_device.depth());
   Iota<<<blocks, threads_per_block>>>(src_device.ptr(), src_device.pitch(),

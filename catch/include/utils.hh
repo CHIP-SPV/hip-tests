@@ -19,6 +19,7 @@ THE SOFTWARE.
 
 #pragma once
 
+#include <algorithm>
 #include <chrono>
 #include <optional>
 
@@ -28,6 +29,19 @@ THE SOFTWARE.
 namespace {
 inline constexpr size_t kPageSize = 4096;
 }  // anonymous namespace
+
+// Returns the largest 1-D block size not exceeding `desired` that the current
+// device can actually launch. hip-tests historically hardcoded 1024 threads per
+// block, which exceeds the per-block limit reported by some devices (e.g. Intel
+// iGPUs and some rusticl/radeonsi configurations report 512), causing
+// hipErrorInvalidValue / CL_INVALID_WORK_GROUP_SIZE at kernel launch.
+inline unsigned MaxThreadsPerBlock(unsigned desired = 1024) {
+  int device = 0;
+  HIP_CHECK(hipGetDevice(&device));
+  hipDeviceProp_t props;
+  HIP_CHECK(hipGetDeviceProperties(&props, device));
+  return std::min(desired, static_cast<unsigned>(props.maxThreadsPerBlock));
+}
 
 template <typename T>
 void ArrayMismatch(T* const expected, T* const actual, const size_t num_elements) {

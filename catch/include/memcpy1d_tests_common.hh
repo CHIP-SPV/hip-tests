@@ -58,7 +58,7 @@ void MemcpyDeviceToHostShell(F memcpy_func, const hipStream_t kernel_stream = nu
   LinearAllocGuard<int> device_allocation(LA::hipMalloc, allocation_size);
 
   const auto element_count = allocation_size / sizeof(*device_allocation.ptr());
-  constexpr auto thread_count = 1024;
+  const auto thread_count = MaxThreadsPerBlock(1024);
   const auto block_count = element_count / thread_count + 1;
   constexpr int expected_value = 42;
   VectorSet<<<block_count, thread_count, 0, kernel_stream>>>(device_allocation.ptr(),
@@ -153,7 +153,7 @@ void MemcpyDeviceToDeviceShell(F memcpy_func, const hipStream_t kernel_stream = 
   LinearAllocGuard<int> dst_allocation(LinearAllocs::hipMalloc, allocation_size);
 
   const auto element_count = allocation_size / sizeof(*src_allocation.ptr());
-  constexpr auto thread_count = 1024;
+  const auto thread_count = MaxThreadsPerBlock(1024);
   const auto block_count = element_count / thread_count + 1;
   constexpr int expected_value = 42;
   HIP_CHECK(hipSetDevice(src_device));
