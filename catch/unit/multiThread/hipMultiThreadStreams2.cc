@@ -88,6 +88,11 @@ void run(size_t size, hipStream_t stream1, hipStream_t stream2) {
     HIPCHECK(hipMalloc(&Ddd, size));
     HIPCHECK(hipHostMalloc((void**)&Ehh, size, hipHostMallocDefault));
 
+    for (int i = 0; i < N; i++) {
+        Ah[i] = 1.0f;
+        Ahh[i] = 1.0f;
+    }
+
     HIPCHECK(hipMemcpyAsync(Bh, Ah, size, hipMemcpyHostToHost, stream1));
     HIPCHECK(hipMemcpyAsync(Bhh, Ahh, size, hipMemcpyHostToHost, stream2));
     HIPCHECK(hipMemcpyAsync(Cd, Bh, size, hipMemcpyHostToDevice, stream1));
