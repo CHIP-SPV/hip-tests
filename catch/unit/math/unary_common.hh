@@ -49,7 +49,7 @@ void UnaryHalfPrecisionBruteForceTest(kernel_sig<T, Float16> kernel, ref_sig<RT,
   const auto [grid_size, block_size] = GetOccupancyMaxPotentialBlockSize(kernel);
   uint64_t stop = std::numeric_limits<uint16_t>::max() + 1ul;
   const auto max_batch_size =
-      std::min(GetMaxAllowedDeviceMemoryUsage() / (sizeof(Float16) + sizeof(T)), stop);
+      std::min<uint64_t>(GetMaxAllowedDeviceMemoryUsage() / (sizeof(Float16) + sizeof(T)), stop);
   LinearAllocGuard<Float16> values{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(Float16)};
 
   MathTest math_test(kernel, max_batch_size);
@@ -92,7 +92,7 @@ void UnarySinglePrecisionBruteForceTest(kernel_sig<T, float> kernel, ref_sig<RT,
   const auto [grid_size, block_size] = GetOccupancyMaxPotentialBlockSize(kernel);
   uint64_t stop = std::numeric_limits<uint32_t>::max() + 1ul;
   const auto max_batch_size =
-      std::min(GetMaxAllowedDeviceMemoryUsage() / (sizeof(float) + sizeof(T)), stop);
+      std::min<uint64_t>(GetMaxAllowedDeviceMemoryUsage() / (sizeof(float) + sizeof(T)), stop);
   LinearAllocGuard<float> values{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(float)};
 
   MathTest math_test(kernel, max_batch_size);
@@ -157,7 +157,8 @@ void UnaryDoublePrecisionBruteForceTest(kernel_sig<T, double> kernel, ref_sig<RT
   const auto [grid_size, block_size] = GetOccupancyMaxPotentialBlockSize(kernel);
   const uint64_t num_iterations = GetTestIterationCount();
   const auto max_batch_size =
-      std::min(GetMaxAllowedDeviceMemoryUsage() / (sizeof(double) + sizeof(T)), num_iterations);
+      std::min<uint64_t>(GetMaxAllowedDeviceMemoryUsage() / (sizeof(double) + sizeof(T)),
+                         num_iterations);
   LinearAllocGuard<double> values{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(double)};
 
   MathTest math_test(kernel, max_batch_size);
