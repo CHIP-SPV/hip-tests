@@ -148,7 +148,8 @@ void QuaternaryFloatingPointBruteForceTest(kernel_sig<T, TArg, TArg, TArg, TArg>
   const auto [grid_size, block_size] = GetOccupancyMaxPotentialBlockSize(kernel);
   const uint64_t num_iterations = GetTestIterationCount();
   const auto max_batch_size =
-      std::min(GetMaxAllowedDeviceMemoryUsage() / (sizeof(TArg) * 4 + sizeof(T)), num_iterations);
+      std::min<uint64_t>(GetMaxAllowedDeviceMemoryUsage() / (sizeof(TArg) * 4 + sizeof(T)),
+                         num_iterations);
   LinearAllocGuard<TArg> x1s{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(TArg)};
   LinearAllocGuard<TArg> x2s{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(TArg)};
   LinearAllocGuard<TArg> x3s{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(TArg)};

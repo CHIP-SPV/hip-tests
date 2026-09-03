@@ -53,7 +53,7 @@ void BesselDoublePrecisionBruteForceTest(kernel_bessel_n_sig<double> kernel,
                                          const double b = std::numeric_limits<double>::max()) {
   const auto [grid_size, block_size] = GetOccupancyMaxPotentialBlockSize(kernel);
   const uint64_t num_iterations = GetTestIterationCount();
-  const auto max_batch_size = std::min(
+  const auto max_batch_size = std::min<uint64_t>(
       GetMaxAllowedDeviceMemoryUsage() / (sizeof(double) * 2 + sizeof(int)), num_iterations);
   LinearAllocGuard<int> x1s{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(int)};
   LinearAllocGuard<double> x2s{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(double)};
