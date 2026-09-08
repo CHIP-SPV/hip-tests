@@ -27,6 +27,8 @@ THE SOFTWARE.
 #include <hip_test_common.hh>
 #include <thread>
 #define N 1000
+// Largest divisor of N within Mali-G52's 384-thread block limit.
+#define THREADS_PER_BLOCK 250
 
 template <typename T>
 __global__ void Inc(T* Array) {
@@ -50,7 +52,8 @@ void run1(size_t size, hipStream_t stream) {
 
     HIPCHECK(hipMemcpyAsync(Bh, Ah, size, hipMemcpyHostToHost, stream));
     HIPCHECK(hipMemcpyAsync(Cd, Bh, size, hipMemcpyHostToDevice, stream));
-    hipLaunchKernelGGL(HIP_KERNEL_NAME(Inc), dim3(N / 500), dim3(500), 0, stream, Cd);
+    hipLaunchKernelGGL(HIP_KERNEL_NAME(Inc), dim3(N / THREADS_PER_BLOCK),
+                       dim3(THREADS_PER_BLOCK), 0, stream, Cd);
     HIP_CHECK(hipGetLastError()); 
     HIPCHECK(hipMemcpyAsync(Dd, Cd, size, hipMemcpyDeviceToDevice, stream));
     HIPCHECK(hipMemcpyAsync(Eh, Dd, size, hipMemcpyDeviceToHost, stream));
@@ -97,9 +100,11 @@ void run(size_t size, hipStream_t stream1, hipStream_t stream2) {
     HIPCHECK(hipMemcpyAsync(Bhh, Ahh, size, hipMemcpyHostToHost, stream2));
     HIPCHECK(hipMemcpyAsync(Cd, Bh, size, hipMemcpyHostToDevice, stream1));
     HIPCHECK(hipMemcpyAsync(Cdd, Bhh, size, hipMemcpyHostToDevice, stream2));
-    hipLaunchKernelGGL(HIP_KERNEL_NAME(Inc), dim3(N / 500), dim3(500), 0, stream1, Cd);
+    hipLaunchKernelGGL(HIP_KERNEL_NAME(Inc), dim3(N / THREADS_PER_BLOCK),
+                       dim3(THREADS_PER_BLOCK), 0, stream1, Cd);
     HIP_CHECK(hipGetLastError()); 
-    hipLaunchKernelGGL(HIP_KERNEL_NAME(Inc), dim3(N / 500), dim3(500), 0, stream2, Cdd);
+    hipLaunchKernelGGL(HIP_KERNEL_NAME(Inc), dim3(N / THREADS_PER_BLOCK),
+                       dim3(THREADS_PER_BLOCK), 0, stream2, Cdd);
     HIP_CHECK(hipGetLastError()); 
     HIPCHECK(hipMemcpyAsync(Dd, Cd, size, hipMemcpyDeviceToDevice, stream1));
     HIPCHECK(hipMemcpyAsync(Ddd, Cdd, size, hipMemcpyDeviceToDevice, stream2));
