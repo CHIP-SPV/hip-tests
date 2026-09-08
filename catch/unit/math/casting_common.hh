@@ -95,7 +95,7 @@ void CastUnaryHalfPrecisionBruteForceTest(kernel_sig<T, Float16> kernel,
   const auto [grid_size, block_size] = GetOccupancyMaxPotentialBlockSize(kernel);
   uint64_t stop = std::numeric_limits<uint16_t>::max() + 1ul;
   const auto max_batch_size =
-      std::min(GetMaxAllowedDeviceMemoryUsage() / (sizeof(Float16) + sizeof(T)), stop);
+      std::min<uint64_t>(GetMaxAllowedDeviceMemoryUsage() / (sizeof(Float16) + sizeof(T)), stop);
   LinearAllocGuard<Float16> values{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(Float16)};
 
   MathTest math_test(kernel, max_batch_size);
@@ -201,7 +201,8 @@ void CastIntBruteForceTest(kernel_sig<T, TArg> kernel, ref_sig<RT, RTArg> ref_fu
   const auto [grid_size, block_size] = GetOccupancyMaxPotentialBlockSize(kernel);
   const uint64_t num_iterations = GetTestIterationCount();
   const auto max_batch_size =
-      std::min(GetMaxAllowedDeviceMemoryUsage() / (sizeof(T) + sizeof(TArg)), num_iterations);
+      std::min<uint64_t>(GetMaxAllowedDeviceMemoryUsage() / (sizeof(T) + sizeof(TArg)),
+                         num_iterations);
   LinearAllocGuard<TArg> values{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(TArg)};
 
   MathTest math_test(kernel, max_batch_size);

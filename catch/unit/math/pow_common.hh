@@ -56,7 +56,8 @@ void PowIntFloatingPointBruteForceTest(kernel_pow_int_sig<T1, T2> kernel,
   const auto [grid_size, block_size] = GetOccupancyMaxPotentialBlockSize(kernel);
   const uint64_t num_iterations = GetTestIterationCount();
   const auto max_batch_size =
-      std::min(GetMaxAllowedDeviceMemoryUsage() / (sizeof(T1) * 2 + sizeof(T2)), num_iterations);
+      std::min<uint64_t>(GetMaxAllowedDeviceMemoryUsage() / (sizeof(T1) * 2 + sizeof(T2)),
+                         num_iterations);
   LinearAllocGuard<T1> x1s{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(T1)};
   LinearAllocGuard<T2> x2s{LinearAllocs::hipHostMalloc, max_batch_size * sizeof(T2)};
 
