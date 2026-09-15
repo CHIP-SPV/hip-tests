@@ -110,6 +110,7 @@ TEST_CASE("Unit___threadfence_system_Positive_Basic_Peer") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit___threadfence_system_Positive_Basic_Host") {
+  if (SkipIfNoAtomicHostAccess()) return;
   LinearAllocGuard<int> in_host(LinearAllocs::hipHostMalloc, 2 * sizeof(int));
   LinearAllocGuard<int> out_host(LinearAllocs::hipHostMalloc, 2 * sizeof(int));
 

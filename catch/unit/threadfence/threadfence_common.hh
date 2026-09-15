@@ -37,6 +37,21 @@ template <ThreadfenceScope scope> __device__ void Threadfence() {
 static constexpr int kInitVal1 = 1, kInitVal2 = 2;
 static constexpr int kSetVal1 = 10, kSetVal2 = 20;
 
+// chipStar's atomic volatile lowering can fault where the device reports no atomic host access.
+inline bool SkipIfNoAtomicHostAccess() {
+#ifdef CHIP_VOLATILE_LOWERING_ATOMIC
+  int device = 0, atomic = 0;
+  HIP_CHECK(hipGetDevice(&device));
+  HIP_CHECK(hipDeviceGetAttribute(&atomic, hipDeviceAttributeHostNativeAtomicSupported, device));
+  if (!atomic) {
+    HipTest::HIP_SKIP_TEST(
+        "volatile accesses are atomics and the device reports no atomic access to host memory");
+    return true;
+  }
+#endif
+  return false;
+}
+
 template <ThreadfenceScope scope> __host__ __device__ void Write(volatile int* in) {
   in[0] = kSetVal1;
 #ifdef __HIP_DEVICE_COMPILE__
