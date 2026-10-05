@@ -150,4 +150,5 @@ TEST_CASE("Unit_Device_modf_Accuracy_Positive - double") {
       PairValidatorBuilderFactory<double>(ULPValidatorBuilderFactory<double>(0)));
 }
 
-TEST_CASE("Unit_Device_modf_modff_Negative_RTC") { NegativeTestRTCWrapper<20>(kModf); }
+// chipStar declares float modf(float, float*), so modf_kernel_v8 compiles.
+TEST_CASE("Unit_Device_modf_modff_Negative_RTC") { NegativeTestRTCWrapper<HT_SPIRV ? 19 : 20>(kModf); }

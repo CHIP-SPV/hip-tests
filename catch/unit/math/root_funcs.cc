@@ -558,7 +558,8 @@ TEMPLATE_TEST_CASE("Unit_Device_norm_Sanity_Positive", "", float, double) {
  * ------------------------
  *    - HIP_VERSION >= 5.2
  */
-TEST_CASE("Unit_Device_norm_normf_Negative_RTC") { NegativeTestRTCWrapper<18>(kNorm); }
+// chipStar declares float norm(int, const float*), so norm_kernel_v8 compiles.
+TEST_CASE("Unit_Device_norm_normf_Negative_RTC") { NegativeTestRTCWrapper<HT_SPIRV ? 17 : 18>(kNorm); }
 
 MATH_NORM_KERNEL_DEF(rnorm)
 
@@ -601,4 +602,5 @@ TEMPLATE_TEST_CASE("Unit_Device_rnorm_Sanity_Positive", "", float, double) {
  * ------------------------
  *    - HIP_VERSION >= 5.2
  */
-TEST_CASE("Unit_Device_rnorm_rnormf_Negative_RTC") { NegativeTestRTCWrapper<18>(kRnorm); }
+// chipStar declares float rnorm(int, const float*), so rnorm_kernel_v8 compiles.
+TEST_CASE("Unit_Device_rnorm_rnormf_Negative_RTC") { NegativeTestRTCWrapper<HT_SPIRV ? 17 : 18>(kRnorm); }
