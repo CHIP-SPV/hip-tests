@@ -177,7 +177,6 @@ TEST_CASE("Unit_funnelshift") {
     }
   }
 
-  errors = 0;
   for (i = 0; i < NUM_TESTS && errors == 0; i++) {
     if (host_r_output[i] != golden_r[i]) {
       errors++;
