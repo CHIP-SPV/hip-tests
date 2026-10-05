@@ -256,7 +256,7 @@ set(_CATCH_DISCOVER_TESTS_SCRIPT
 function(hip_add_exe_to_target)
   set(options)
   set(args NAME TEST_TARGET_NAME PLATFORM COMPILE_OPTIONS)
-  set(list_args TEST_SRC LINKER_LIBS COMMON_SHARED_SRC PROPERTY)
+  set(list_args TEST_SRC LINKER_LIBS COMMON_SHARED_SRC PROPERTY EXTRA_ARGS)
   cmake_parse_arguments(
     PARSE_ARGV 0
     "" # variable prefix
@@ -340,7 +340,7 @@ function(hip_add_exe_to_target)
 
   
   if(DEFINED CATCH2_DISCOVER_TESTS_COMPILE_TIME AND CATCH2_DISCOVER_TESTS_COMPILE_TIME)
-    catch_discover_tests_compile_time_detection("${_EXE_NAME_LIST}" "${_NAME}" PROPERTIES  SKIP_REGULAR_EXPRESSION "HIP_SKIP_THIS_TEST")
+    catch_discover_tests_compile_time_detection("${_EXE_NAME_LIST}" "${_NAME}" EXTRA_ARGS ${_EXTRA_ARGS} PROPERTIES  SKIP_REGULAR_EXPRESSION "HIP_SKIP_THIS_TEST")
   else()
     catch_discover_tests("${_EXE_NAME_LIST}" "${_NAME}" PROPERTIES  SKIP_REGULAR_EXPRESSION "HIP_SKIP_THIS_TEST")
   endif()
