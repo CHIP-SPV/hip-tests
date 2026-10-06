@@ -762,7 +762,7 @@ TEST_CASE("Unit_Device_y0f_Accuracy_Limited_Positive") {
  */
 TEST_CASE("Unit_Device_y0_Accuracy_Limited_Positive") {
   long double (*ref)(long double) = [](long double x) { return boost::math::cyl_neumann(0, x, ref_policy()); };
-  UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<float, double>>(y0_kernel<double>), ref,
+  UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<double, double>>(y0_kernel<double>), ref,
                                      AbsValidatorBuilderFactory<float>(5.e-12), -8.,
                                      std::numeric_limits<double>::max());
 }
@@ -826,7 +826,7 @@ TEST_CASE("Unit_Device_y1f_Accuracy_Limited_Positive") {
  */
 TEST_CASE("Unit_Device_y1_Accuracy_Limited_Positive") {
   long double (*ref)(long double) = [](long double x) { return x == 0 ? -std::numeric_limits<long double>::infinity() : boost::math::cyl_neumann(1, x, ref_policy()); };
-  UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<float, double>>(y1_kernel<double>), ref,
+  UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<double, double>>(y1_kernel<double>), ref,
                                      AbsValidatorBuilderFactory<float>(5.e-12), -8.,
                                      std::numeric_limits<double>::max());
 }

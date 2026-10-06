@@ -424,7 +424,7 @@ CAST_KERNEL_DEF(__short_as_half, Float16, short)
  */
 TEST_CASE("Unit_Device___short_as_half_Accuracy_Positive") {
   Float16 (*ref)(short) = type2_as_type1_ref<Float16, short>;
-  CastIntBruteForceTest(kernel_cast<kernel_sig<Float16, long long>>(__short_as_half_kernel), ref, EqValidatorBuilderFactory<Float16>());
+  CastIntBruteForceTest(kernel_cast<kernel_sig<Float16, short>>(__short_as_half_kernel), ref, EqValidatorBuilderFactory<Float16>());
 }
 
 CAST_KERNEL_DEF(__ushort_as_half, Float16, unsigned short)
@@ -444,5 +444,5 @@ CAST_KERNEL_DEF(__ushort_as_half, Float16, unsigned short)
  */
 TEST_CASE("Unit_Device___ushort_as_half_Accuracy_Positive") {
   Float16 (*ref)(unsigned short) = type2_as_type1_ref<Float16, unsigned short>;
-  CastIntBruteForceTest(kernel_cast<kernel_sig<Float16, long long>>(__ushort_as_half_kernel), ref, EqValidatorBuilderFactory<Float16>());
+  CastIntBruteForceTest(kernel_cast<kernel_sig<Float16, unsigned short>>(__ushort_as_half_kernel), ref, EqValidatorBuilderFactory<Float16>());
 }
