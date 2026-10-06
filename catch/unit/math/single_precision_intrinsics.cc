@@ -112,7 +112,8 @@ MATH_UNARY_SP_TEST_DEF_IMPL(__frsqrt_rn, __frsqrt_rn_ref, EqValidatorBuilderFact
 
 
 MATH_UNARY_SP_VALIDATOR_BUILDER_DEF(__expf) {
-  const int64_t ulp_err = 2 + static_cast<int64_t>(std::floor(std::abs(1.16f * x)));
+  // Same-sign floats are under 2^31 ulps apart, so the cap changes no verdict.
+  const int64_t ulp_err = 2 + static_cast<int64_t>(std::fmin(std::floor(std::abs(1.16f * x)), 0x1p31f));
   return ULPValidatorBuilderFactory<float>(ulp_err)(target);
 }
 
@@ -136,7 +137,8 @@ MATH_UNARY_SP_TEST_DEF(__expf, static_cast<double (*)(double)>(std::exp));
 
 
 MATH_UNARY_SP_VALIDATOR_BUILDER_DEF(__exp10f) {
-  const int64_t ulp_err = 2 + static_cast<int64_t>(std::floor(std::abs(2.95f * x)));
+  // Same-sign floats are under 2^31 ulps apart, so the cap changes no verdict.
+  const int64_t ulp_err = 2 + static_cast<int64_t>(std::fmin(std::floor(std::abs(2.95f * x)), 0x1p31f));
   return ULPValidatorBuilderFactory<float>(ulp_err)(target);
 }
 
