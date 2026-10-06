@@ -147,6 +147,8 @@ void UnarySinglePrecisionRangeTest(kernel_sig<T, float> kernel, ref_sig<RT, RTAr
     math_test.Run(validator_builder, grid_size, block_size, ref_func, inserted, values.ptr());
     inserted = 0u;
   }
+  if (inserted > 0u)
+    math_test.Run(validator_builder, grid_size, block_size, ref_func, inserted, values.ptr());
 }
 
 template <typename T, typename RT, typename RTArg, typename ValidatorBuilder>
