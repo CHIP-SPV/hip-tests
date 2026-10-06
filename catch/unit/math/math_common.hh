@@ -155,12 +155,9 @@ template <typename T, typename... Ts> class MathTest {
           fail_flag_.store(true, std::memory_order_relaxed);
           // Several threads might have passed the first check, but failed validation. On the
           // chance of this happening, access to the string stream must be serialized.
-          const auto log =
+          std::lock_guard lg{mtx_};
+          error_info_ +=
               MakeLogMessage(actual_val, xss[base_idx + i]...) + validator->describe() + "\n";
-          {
-            std::lock_guard lg{mtx_};
-            error_info_ += log;
-          }
           return;
         }
       }
