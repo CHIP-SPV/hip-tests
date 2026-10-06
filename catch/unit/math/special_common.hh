@@ -112,6 +112,9 @@ void BesselSinglePrecisionRangeTest(kernel_bessel_n_sig<float> kernel,
                   x2s.ptr());
     inserted = 0u;
   }
+  if (inserted > 0u)
+    math_test.Run(validator_builder, grid_size, block_size, ref_func, inserted, x1s.ptr(),
+                  x2s.ptr());
 }
 
 template <typename T, typename F, typename ValidatorBuilder>

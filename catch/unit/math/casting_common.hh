@@ -191,6 +191,8 @@ void CastIntRangeTest(kernel_sig<T, TArg> kernel, ref_sig<RT, RTArg> ref_func,
     math_test.Run(validator_builder, grid_size, block_size, ref_func, inserted, values.ptr());
     inserted = 0u;
   }
+  if (inserted > 0u)
+    math_test.Run(validator_builder, grid_size, block_size, ref_func, inserted, values.ptr());
 }
 
 template <typename T, typename TArg, typename RT, typename RTArg, typename ValidatorBuilder>
@@ -257,4 +259,7 @@ void CastBinaryIntRangeTest(kernel_sig<T1, T2, T2> kernel, ref_sig<T1, T2, T2> r
                   values2.ptr());
     inserted = 0u;
   }
+  if (inserted > 0u)
+    math_test.Run(validator_builder, grid_size, block_size, ref_func, inserted, values1.ptr(),
+                  values2.ptr());
 }
