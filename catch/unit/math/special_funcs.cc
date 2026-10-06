@@ -753,7 +753,7 @@ TEST_CASE("Unit_Device_y0_Accuracy_Limited_Positive") {
 #elif _WIN64
   long double (*ref)(long double) = _y0l;
 #endif
-  UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<float, double>>(y0_kernel<double>), ref,
+  UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<double, double>>(y0_kernel<double>), ref,
                                      AbsValidatorBuilderFactory<float>(5.e-12), -8.,
                                      std::numeric_limits<double>::max());
 }
@@ -821,7 +821,7 @@ TEST_CASE("Unit_Device_y1_Accuracy_Limited_Positive") {
 #elif _WIN64
   long double (*ref)(long double) = _y1l;
 #endif
-  UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<float, double>>(y1_kernel<double>), ref,
+  UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<double, double>>(y1_kernel<double>), ref,
                                      AbsValidatorBuilderFactory<float>(5.e-12), -8.,
                                      std::numeric_limits<double>::max());
 }
