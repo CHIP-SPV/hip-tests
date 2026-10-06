@@ -184,7 +184,7 @@ void CastIntRangeTest(kernel_sig<T, TArg> kernel, ref_sig<RT, RTArg> ref_func,
   MathTest math_test(kernel, max_batch_size);
 
   size_t inserted = 0u;
-  for (TArg v = a; v <= b; v++) {
+  for (long long v = a; v <= b; v++) {
     values.ptr()[inserted++] = v;
     if (inserted < max_batch_size) continue;
 
@@ -249,7 +249,7 @@ void CastBinaryIntRangeTest(kernel_sig<T1, T2, T2> kernel, ref_sig<T1, T2, T2> r
   MathTest math_test(kernel, max_batch_size);
 
   size_t inserted = 0u;
-  for (T2 v = a; v <= b; v++) {
+  for (long long v = a; v <= b; v++) {
     values1.ptr()[inserted] = v;
     values2.ptr()[inserted++] = b - v;
     if (inserted < max_batch_size) continue;
