@@ -203,7 +203,6 @@ TestContext::TestContext(int argc, char** argv) {
   setExePath(argc, argv);
   getConfigFiles();
   parseJsonFiles();
-  parseOptions(argc, argv);
 }
 
 void TestContext::setExePath(int argc, char** argv) {
@@ -220,18 +219,12 @@ bool TestContext::isNvidia() const { return nvidia; }
 bool TestContext::isAmd() const { return amd; }
 bool TestContext::isSpirv() const { return spirv; }
 
-void TestContext::parseOptions(int argc, char** argv) {
-  // Test name is at [1] position
-  if (argc != 2) return;
-  current_test = std::string(argv[1]);
-}
-
-bool TestContext::skipTest() const {
+bool TestContext::skipTest(const std::string& test) const {
   // Direct Match
   auto flags = std::regex::ECMAScript;
   for (const auto& i : skip_test) {
     auto regex = std::regex(i.c_str(), flags);
-    if (std::regex_match(current_test, regex)) {
+    if (std::regex_match(test, regex)) {
       return true;
     }
   }
