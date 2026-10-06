@@ -6,13 +6,6 @@
 CmdOptions cmd_options;
 
 int main(int argc, char** argv) {
-  auto& context = TestContext::get(argc, argv);
-  if (context.skipTest()) {
-    // CTest uses this regex to figure out if the test has been skipped
-    std::cout << "HIP_SKIP_THIS_TEST" << std::endl;
-    return 0;
-  }
-
   Catch::Session session;
 
   using namespace Catch::clara;
@@ -47,7 +40,26 @@ int main(int argc, char** argv) {
 
   session.cli(cli);
 
-  int out = session.run(argc, argv);
+  int out = session.applyCommandLine(argc, argv);
+  if (out != 0) return out;
+
+  auto& context = TestContext::get(argc, argv);
+  // A lone single-filter spec is matched as is. Otherwise "" is matched, as for the old
+  // argc != 2, and a lone multi-filter spec such as "a,b" must also match as a whole.
+  const auto& cfg = session.configData();
+  const auto& spec = cfg.testsOrTags;
+  bool single = spec.size() == 1 &&
+      Catch::parseTestSpec(Catch::trim(spec[0])).matchesByFilter({}, Catch::Config()).size() == 1;
+  if (!cfg.showHelp && !cfg.libIdentify && !cfg.listTests && !cfg.listTags && !cfg.listReporters &&
+      !cfg.listTestNamesOnly &&
+      (single ? context.skipTest(spec[0])
+              : context.skipTest("") && (spec.size() != 1 || context.skipTest(spec[0])))) {
+    // CTest uses this regex to figure out if the test has been skipped
+    std::cout << "HIP_SKIP_THIS_TEST" << std::endl;
+    return 0;
+  }
+
+  out = session.run();
   TestContext::get().cleanContext();
   return out;
 }

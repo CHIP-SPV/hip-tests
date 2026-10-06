@@ -82,7 +82,6 @@ class TestContext {
   bool p_windows = false, p_linux = false;  // OS
   bool amd = false, nvidia = false, spirv = false;         // HIP Platform
   std::string exe_path;
-  std::string current_test;
   std::set<std::string> skip_test;
   std::string json_file_;
   std::vector<std::string> platform_list_ = {"amd", "nvidia", "spirv"};
@@ -103,7 +102,6 @@ class TestContext {
   void detectPlatform();
   void getConfigFiles();
   void setExePath(int, char**);
-  void parseOptions(int, char**);
   bool parseJsonFiles();
   std::string getMatchingConfigFile(std::string config_dir);
   std::string getCurrentArch();
@@ -148,9 +146,8 @@ class TestContext {
   bool isNvidia() const;
   bool isAmd() const;
   bool isSpirv() const;
-  bool skipTest() const;
+  bool skipTest(const std::string& test) const;
 
-  const std::string& getCurrentTest() const { return current_test; }
   std::string currentPath() const;
 
   // Multi threaded results helpers
