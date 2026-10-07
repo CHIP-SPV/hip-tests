@@ -156,7 +156,10 @@ MATH_UNARY_SP_KERNEL_DEF(__exp10f);
  * ------------------------
  *    - HIP_VERSION >= 5.2
  */
-MATH_UNARY_SP_TEST_DEF(__exp10f, static_cast<double (*)(double)>(exp10));
+// exp10 is a GNU extension; macOS libc does not have it.
+static double exp10_ref(double x) { return std::pow(10.0, x); }
+
+MATH_UNARY_SP_TEST_DEF(__exp10f, exp10_ref);
 
 
 MATH_UNARY_SP_VALIDATOR_BUILDER_DEF(__logf) {
