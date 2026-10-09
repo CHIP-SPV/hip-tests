@@ -99,10 +99,10 @@ __global__ void ThreadfenceTestKernel(int* out, int* in) {
   int *out_mem = out, *in_mem = in;
 
   if constexpr (use_shared_mem) {
-    if (tid == 0) {
-      in_mem = &shared_mem[0];
-      out_mem = &shared_mem[2];
+    in_mem = &shared_mem[0];
+    out_mem = &shared_mem[2];
 
+    if (tid == 0) {
       in_mem[0] = in[0];
       in_mem[1] = in[1];
     }
