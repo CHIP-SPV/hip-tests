@@ -174,7 +174,7 @@ static void initHipCtx(hipCtx_t* pcontext) {
 #endif
 
 static inline bool IsGfx11() {
-#if HT_NVIDIA
+#if HT_NVIDIA || HT_SPIRV
   return false;
 #elif HT_AMD
   int device = -1;
