@@ -26,6 +26,13 @@ THE SOFTWARE.
 
 #include <boost/math/special_functions.hpp>
 
+// Return NaN or infinity like libm instead of throwing.
+using ref_policy = boost::math::policies::policy<
+    boost::math::policies::domain_error<boost::math::policies::ignore_error>,
+    boost::math::policies::pole_error<boost::math::policies::ignore_error>,
+    boost::math::policies::overflow_error<boost::math::policies::ignore_error>,
+    boost::math::policies::evaluation_error<boost::math::policies::ignore_error>>;
+
 
 /**
  * @addtogroup SpecialMathFuncs SpecialMathFuncs
@@ -586,7 +593,7 @@ MATH_UNARY_KERNEL_DEF(cyl_bessel_i0)
  * Test Description
  * ------------------------
  *    - Tests the numerical accuracy of `cyl_bessel_i0f(x)` for all possible inputs in range [0,
- * 10000). The results are compared against reference function `double std::cyl_bessel_i(0,
+ * 10000). The results are compared against reference function `double boost::math::cyl_bessel_i(0,
  * double)`. The maximum ulp error is 6.
  *
  * Test source
@@ -597,7 +604,7 @@ MATH_UNARY_KERNEL_DEF(cyl_bessel_i0)
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_cyl_bessel_i0f_Accuracy_Limited_Positive") {
-  auto cyl_bessel_i0_ref = [](double arg) -> double { return std::cyl_bessel_i(0, arg); };
+  auto cyl_bessel_i0_ref = [](double arg) -> double { return boost::math::cyl_bessel_i(0, arg, ref_policy()); };
   double (*ref)(double) = cyl_bessel_i0_ref;
   UnarySinglePrecisionRangeTest(kernel_cast<kernel_sig<float, float>>(cyl_bessel_i0_kernel<float>), ref,
                                 ULPValidatorBuilderFactory<float>(6), 0, 10000);
@@ -608,7 +615,7 @@ TEST_CASE("Unit_Device_cyl_bessel_i0f_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `cyl_bessel_i0(x)` against a table of difficult values,
  * followed by a large number of randomly generated values from range [0, 10000). The results are
- * compared against reference function `long double std::cyl_bessel_i(0, long double)`. The maximum
+ * compared against reference function `long double boost::math::cyl_bessel_i(0, long double)`. The maximum
  * ulp error is 6.
  *
  * Test source
@@ -619,7 +626,7 @@ TEST_CASE("Unit_Device_cyl_bessel_i0f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_cyl_bessel_i0_Accuracy_Limited_Positive") {
-  auto cyl_bessel_i0_ref = [](long double arg) -> long double { return std::cyl_bessel_i(0, arg); };
+  auto cyl_bessel_i0_ref = [](long double arg) -> long double { return boost::math::cyl_bessel_i(0, arg, ref_policy()); };
   long double (*ref)(long double) = cyl_bessel_i0_ref;
   UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<double, double>>(cyl_bessel_i0_kernel<double>), ref,
                                      ULPValidatorBuilderFactory<double>(6), 0, 10000);
@@ -647,7 +654,7 @@ MATH_UNARY_KERNEL_DEF(cyl_bessel_i1)
  * Test Description
  * ------------------------
  *    - Tests the numerical accuracy of `cyl_bessel_i1f(x)` for all possible inputs in range [0,
- * 10000). The results are compared against reference function `double std::cyl_bessel_i(1,
+ * 10000). The results are compared against reference function `double boost::math::cyl_bessel_i(1,
  * double)`. The maximum ulp error is 6.
  *
  * Test source
@@ -658,7 +665,7 @@ MATH_UNARY_KERNEL_DEF(cyl_bessel_i1)
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_cyl_bessel_i1f_Accuracy_Limited_Positive") {
-  auto cyl_bessel_i1_ref = [](double arg) -> double { return std::cyl_bessel_i(1, arg); };
+  auto cyl_bessel_i1_ref = [](double arg) -> double { return boost::math::cyl_bessel_i(1, arg, ref_policy()); };
   double (*ref)(double) = cyl_bessel_i1_ref;
   UnarySinglePrecisionRangeTest(kernel_cast<kernel_sig<float, float>>(cyl_bessel_i1_kernel<float>), ref,
                                 ULPValidatorBuilderFactory<float>(6), 0, 10000);
@@ -669,7 +676,7 @@ TEST_CASE("Unit_Device_cyl_bessel_i1f_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `cyl_bessel_i1(x)` against a table of difficult values,
  * followed by a large number of randomly generated values from range [0, 10000). The results are
- * compared against reference function `long double std::cyl_bessel_i(1, long double)`. The maximum
+ * compared against reference function `long double boost::math::cyl_bessel_i(1, long double)`. The maximum
  * ulp error is 6.
  *
  * Test source
@@ -680,7 +687,7 @@ TEST_CASE("Unit_Device_cyl_bessel_i1f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_cyl_bessel_i1_Accuracy_Limited_Positive") {
-  auto cyl_bessel_i1_ref = [](long double arg) -> long double { return std::cyl_bessel_i(1, arg); };
+  auto cyl_bessel_i1_ref = [](long double arg) -> long double { return boost::math::cyl_bessel_i(1, arg, ref_policy()); };
   long double (*ref)(long double) = cyl_bessel_i1_ref;
   UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<double, double>>(cyl_bessel_i1_kernel<double>), ref,
                                      ULPValidatorBuilderFactory<double>(6), 0, 10000);
@@ -737,7 +744,7 @@ TEST_CASE("Unit_Device_y0f_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `y0(x)` against a table of difficult values,
  * followed by a large number of randomly generated values. The results are
- * compared against reference function `long double y0l(long double)`. The maximum absolute error is
+ * compared against reference function `long double boost::math::cyl_neumann(0, long double)`. The maximum absolute error is
  * 5x10^-12.
  *
  * Test source
@@ -748,11 +755,7 @@ TEST_CASE("Unit_Device_y0f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_y0_Accuracy_Limited_Positive") {
-#ifndef _WIN32
-  long double (*ref)(long double) = y0l;
-#elif _WIN64
-  long double (*ref)(long double) = _y0l;
-#endif
+  long double (*ref)(long double) = [](long double x) { return boost::math::cyl_neumann(0, x, ref_policy()); };
   UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<float, double>>(y0_kernel<double>), ref,
                                      AbsValidatorBuilderFactory<float>(5.e-12), -8.,
                                      std::numeric_limits<double>::max());
@@ -805,7 +808,7 @@ TEST_CASE("Unit_Device_y1f_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `y1(x)` against a table of difficult values,
  * followed by a large number of randomly generated values. The results are
- * compared against reference function `long double y1l(long double)`. The maximum absolute error is
+ * compared against reference function `long double boost::math::cyl_neumann(1, long double)`. The maximum absolute error is
  * 5x10^-12.
  *
  * Test source
@@ -816,11 +819,7 @@ TEST_CASE("Unit_Device_y1f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_y1_Accuracy_Limited_Positive") {
-#ifndef _WIN32
-  long double (*ref)(long double) = y1l;
-#elif _WIN64
-  long double (*ref)(long double) = _y1l;
-#endif
+  long double (*ref)(long double) = [](long double x) { return boost::math::cyl_neumann(1, x, ref_policy()); };
   UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<float, double>>(y1_kernel<double>), ref,
                                      AbsValidatorBuilderFactory<float>(5.e-12), -8.,
                                      std::numeric_limits<double>::max());
@@ -872,7 +871,7 @@ TEST_CASE("Unit_Device_ynf_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `yn(x)` against a table of difficult values,
  * followed by a large number of randomly generated values from range and n equal to 5, 25, or 120.
- * The results are compared against reference function `long double ynl(int, long double)`. For `x`
+ * The results are compared against reference function `long double boost::math::cyl_neumann(int, long double)`. For `x`
  * larger than 1.5n, the  maximum absolute error is 5x10^-12.
  *
  * Test source
@@ -883,11 +882,7 @@ TEST_CASE("Unit_Device_ynf_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_yn_Accuracy_Limited_Positive") {
-#ifndef _WIN32
-  long double (*ref)(int, long double) = ynl;
-#elif _WIN64
-  long double (*ref)(int, long double) = _ynl;
-#endif
+  long double (*ref)(int, long double) = [](int n, long double x) { return boost::math::cyl_neumann(n, x, ref_policy()); };
   int n = GENERATE(5, 25, 120);
   BesselDoublePrecisionBruteForceTest(kernel_cast<kernel_bessel_n_sig<double>>(yn_kernel<double>), ref,
                                       AbsValidatorBuilderFactory<double>(5.e-12), n, 1.5 * n,
@@ -943,7 +938,7 @@ TEST_CASE("Unit_Device_j0f_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `j0(x)` against a table of difficult values,
  * followed by a large number of randomly generated values. The results are
- * compared against reference function `long double j0l(long double)`. The maximum absolute error is
+ * compared against reference function `long double boost::math::cyl_bessel_j(0, long double)`. The maximum absolute error is
  * 5x10^-12.
  *
  * Test source
@@ -954,11 +949,7 @@ TEST_CASE("Unit_Device_j0f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_j0_Accuracy_Limited_Positive") {
-#ifndef _WIN32
-  long double (*ref)(long double) = j0l;
-#elif _WIN64
-  long double (*ref)(long double) = _j0l;
-#endif
+  long double (*ref)(long double) = [](long double x) { return boost::math::cyl_bessel_j(0, x, ref_policy()); };
   UnaryDoublePrecisionBruteForceTest(
       kernel_cast<kernel_sig<double, double>>(j0_kernel<double>), ref, AbsValidatorBuilderFactory<float>(5.e-12),
       std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max());
@@ -1013,7 +1004,7 @@ TEST_CASE("Unit_Device_j1f_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `j1(x)` against a table of difficult values,
  * followed by a large number of randomly generated values. The results are
- * compared against reference function `long double j1l(long double)`. The maximum absolute error is
+ * compared against reference function `long double boost::math::cyl_bessel_j(1, long double)`. The maximum absolute error is
  * 5x10^-12.
  *
  * Test source
@@ -1024,11 +1015,7 @@ TEST_CASE("Unit_Device_j1f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_j1_Accuracy_Limited_Positive") {
-#ifndef _WIN32
-  long double (*ref)(long double) = j1l;
-#elif _WIN64
-  long double (*ref)(long double) = _j1l;
-#endif
+  long double (*ref)(long double) = [](long double x) { return boost::math::cyl_bessel_j(1, x, ref_policy()); };
   UnaryDoublePrecisionBruteForceTest(
       kernel_cast<kernel_sig<double, double>>(j1_kernel<double>), ref, AbsValidatorBuilderFactory<double>(5.e-12),
       std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max());
@@ -1080,7 +1067,7 @@ TEST_CASE("Unit_Device_jnf_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `jn(x)` against a table of difficult values,
  * followed by a large number of randomly generated values from range and n equal to 5, 25, or 120.
- * The results are compared against reference function `long double jnl(int, long double)`. The
+ * The results are compared against reference function `long double boost::math::cyl_bessel_j(int, long double)`. The
  * maximum absolute error is 5x10^-12.
  *
  * Test source
@@ -1091,11 +1078,7 @@ TEST_CASE("Unit_Device_jnf_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_jn_Accuracy_Limited_Positive") {
-#ifndef _WIN32
-  long double (*ref)(int, long double) = jnl;
-#elif _WIN64
-  long double (*ref)(int, long double) = _jnl;
-#endif
+  long double (*ref)(int, long double) = [](int n, long double x) { return boost::math::cyl_bessel_j(n, x, ref_policy()); };
   int n = GENERATE(5, 25, 120);
   BesselDoublePrecisionBruteForceTest(
       kernel_cast<kernel_bessel_n_sig<double>>(jn_kernel<double>), ref, AbsValidatorBuilderFactory<double>(5.e-12), n,
