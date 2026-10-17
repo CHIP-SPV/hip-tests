@@ -140,6 +140,9 @@ MATH_UNARY_HP_TEST_DEF_IMPL(h2exp, static_cast<float (*)(float)>(std::exp),
                             ULPValidatorBuilderFactory<float>(2));
 
 
+// exp10 is a GNU extension; macOS libc does not have it.
+static float exp10f_ref(float x) { return std::pow(10.0f, x); }
+
 MATH_UNARY_HP_KERNEL_DEF(hexp10);
 
 /**
@@ -155,7 +158,7 @@ MATH_UNARY_HP_KERNEL_DEF(hexp10);
  * ------------------------
  *    - HIP_VERSION >= 5.2
  */
-MATH_UNARY_HP_TEST_DEF_IMPL(hexp10, static_cast<float (*)(float)>(exp10f),
+MATH_UNARY_HP_TEST_DEF_IMPL(hexp10, exp10f_ref,
                             ULPValidatorBuilderFactory<float>(2));
 
 MATH_UNARY_HP_KERNEL_DEF(h2exp10);
@@ -173,7 +176,7 @@ MATH_UNARY_HP_KERNEL_DEF(h2exp10);
  * ------------------------
  *    - HIP_VERSION >= 5.2
  */
-MATH_UNARY_HP_TEST_DEF_IMPL(h2exp10, static_cast<float (*)(float)>(exp10f),
+MATH_UNARY_HP_TEST_DEF_IMPL(h2exp10, exp10f_ref,
                             ULPValidatorBuilderFactory<float>(2));
 
 
