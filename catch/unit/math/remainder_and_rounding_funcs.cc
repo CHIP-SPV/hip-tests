@@ -29,7 +29,11 @@ TEST_CASE("Unit_Device_fmod_fmodf_Negative_RTC") { NegativeTestRTCWrapper<8>(kFm
 MATH_BINARY_WITHIN_ULP_TEST_DEF(remainder, std::remainder, 0, 0)
 TEST_CASE("Unit_Device_remainder_remainder_Negative_RTC") { NegativeTestRTCWrapper<8>(kRemainder); }
 
-MATH_BINARY_WITHIN_ULP_TEST_DEF(fdim, std::fdim, 0, 0)
+template <typename T> RefType_t<T> fdim_ref(RefType_t<T> x, RefType_t<T> y) {
+  return std::fdim(static_cast<T>(x), static_cast<T>(y));
+}
+
+MATH_BINARY_WITHIN_ULP_TEST_DEF(fdim, fdim_ref<TestType>, 0, 0)
 TEST_CASE("Unit_Device_fdim_fdimf_Negative_RTC") { NegativeTestRTCWrapper<8>(kFdim); }
 
 MATH_UNARY_WITHIN_ULP_TEST_DEF(trunc, std::trunc, 0, 0)
