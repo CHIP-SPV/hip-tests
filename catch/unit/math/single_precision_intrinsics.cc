@@ -146,7 +146,7 @@ MATH_UNARY_SP_KERNEL_DEF(__exp10f);
  * Test Description
  * ------------------------
  *    - Tests the numerical accuracy of `__exp10f(x)` for all possible inputs. The results are
- * compared against reference function `double exp10(double)`. The maximum ulp error is `2 +
+ * compared against reference function `double std::pow(10.0, x)`. The maximum ulp error is `2 +
  * floor(abs(2.95 * x))`.
  *
  * Test source

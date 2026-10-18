@@ -149,7 +149,7 @@ MATH_UNARY_HP_KERNEL_DEF(hexp10);
  * Test Description
  * ------------------------
  *    - Tests the numerical accuracy of `hexp10(x)` for all possible inputs. The results are
- * compared against reference function `float exp10(float)`.
+ * compared against reference function `float std::pow(10.0f, x)`.
  *
  * Test source
  * ------------------------
@@ -167,7 +167,7 @@ MATH_UNARY_HP_KERNEL_DEF(h2exp10);
  * Test Description
  * ------------------------
  *    - Tests the numerical accuracy of `h2exp10(x)` for all possible inputs. The results are
- * compared against reference function `float exp10(float)`.
+ * compared against reference function `float std::pow(10.0f, x)`.
  *
  * Test source
  * ------------------------
