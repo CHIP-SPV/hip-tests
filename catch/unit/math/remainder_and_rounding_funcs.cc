@@ -29,7 +29,11 @@ TEST_CASE("Unit_Device_fmod_fmodf_Negative_RTC") { NegativeTestRTCWrapper<8>(kFm
 MATH_BINARY_WITHIN_ULP_TEST_DEF(remainder, std::remainder, 0, 0)
 TEST_CASE("Unit_Device_remainder_remainder_Negative_RTC") { NegativeTestRTCWrapper<8>(kRemainder); }
 
-MATH_BINARY_WITHIN_ULP_TEST_DEF(fdim, std::fdim, 0, 0)
+template <typename T> RefType_t<T> fdim_ref(RefType_t<T> x, RefType_t<T> y) {
+  return std::fdim(static_cast<T>(x), static_cast<T>(y));
+}
+
+MATH_BINARY_WITHIN_ULP_TEST_DEF(fdim, fdim_ref<TestType>, 0, 0)
 TEST_CASE("Unit_Device_fdim_fdimf_Negative_RTC") { NegativeTestRTCWrapper<8>(kFdim); }
 
 MATH_UNARY_WITHIN_ULP_TEST_DEF(trunc, std::trunc, 0, 0)
@@ -85,6 +89,13 @@ LONG_CONVERSION_FUNCTION_TEST_DEF(llround, std::llround, long long)
 TEST_CASE("Unit_Device_llround_llroundf_Negative_RTC") { NegativeTestRTCWrapper<4>(kLlround); }
 
 
+// remquo's quo is specified only in its sign and low 3 bits, and is 0 for finite x and infinite y; INT_MIN marks a violation.
+template <typename T> __host__ __device__ int remquo_quo(int q, T x, T y) {
+  if (!std::isfinite(x) || std::isnan(y) || y == 0) return 0;
+  if (std::isinf(y) ? q != 0 : q != 0 && (q < 0) != (std::signbit(x) != std::signbit(y))) return INT_MIN;
+  return std::abs(q % 8);
+}
+
 template <typename T>
 __global__ void remquo_kernel(std::pair<T, int>* const ys, const size_t num_xs, T* const x1s,
                               T* const x2s) {
@@ -97,12 +108,14 @@ __global__ void remquo_kernel(std::pair<T, int>* const ys, const size_t num_xs, 
     } else if constexpr (std::is_same_v<double, T>) {
       ys[i].first = remquo(x1s[i], x2s[i], &ys[i].second);
     }
+    ys[i].second = remquo_quo(ys[i].second, x1s[i], x2s[i]);
   }
 }
 
 template <typename T> std::pair<T, int> remquo_wrapper(T x1, T x2) {
   std::pair<T, int> ret;
   ret.first = std::remquo(x1, x2, &ret.second);
+  ret.second = remquo_quo(ret.second, x1, x2);
   return ret;
 }
 

@@ -90,7 +90,7 @@ MATH_UNARY_SP_TEST_DEF_IMPL(__fsqrt_rn, static_cast<float (*)(float)>(std::sqrt)
                             EqValidatorBuilderFactory<float>());
 
 
-static float __frsqrt_rn_ref(float x) { return 1.0f / std::sqrt(x); }
+static float __frsqrt_rn_ref(float x) { return static_cast<float>(1.0 / std::sqrt(static_cast<double>(x))); }
 
 MATH_UNARY_SP_KERNEL_DEF(__frsqrt_rn);
 
@@ -98,8 +98,8 @@ MATH_UNARY_SP_KERNEL_DEF(__frsqrt_rn);
  * Test Description
  * ------------------------
  *    - Tests the numerical accuracy of `__frsqrt_rn(x)` for all possible inputs. The results are
- * compared against reference function `float std::sqrt(float)`. The error bounds are
- * IEEE-compliant.
+ * compared against reference function `static_cast<float>(1.0 / std::sqrt(static_cast<double>(x)))`.
+ * The error bounds are IEEE-compliant.
  *
  * Test source
  * ------------------------
