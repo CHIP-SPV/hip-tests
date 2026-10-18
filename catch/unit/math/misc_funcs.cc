@@ -37,12 +37,20 @@ TEST_CASE("Unit_Device_fmax_fmaxf_Negative_RTC") { NegativeTestRTCWrapper<8>(kFm
 MATH_BINARY_WITHIN_ULP_TEST_DEF(fmin, std::fmin, 0, 0)
 TEST_CASE("Unit_Device_fmin_fminf_Negative_RTC") { NegativeTestRTCWrapper<8>(kFmin); }
 
-MATH_BINARY_WITHIN_ULP_TEST_DEF(nextafter, std::nextafter, 0, 0)
+template <typename T> RefType_t<T> nextafter_ref(RefType_t<T> x, RefType_t<T> y) {
+  return std::nextafter(static_cast<T>(x), static_cast<T>(y));
+}
+
+MATH_BINARY_WITHIN_ULP_TEST_DEF(nextafter, nextafter_ref<TestType>, 0, 0)
 TEST_CASE("Unit_Device_nextafter_nextafterf_Negative_RTC") {
   NegativeTestRTCWrapper<8>(kNextAfter);
 }
 
-MATH_TERNARY_WITHIN_ULP_TEST_DEF(fma, std::fma, 0, 0)
+template <typename T> RefType_t<T> fma_ref(RefType_t<T> x, RefType_t<T> y, RefType_t<T> z) {
+  return std::fma(static_cast<T>(x), static_cast<T>(y), static_cast<T>(z));
+}
+
+MATH_TERNARY_WITHIN_ULP_TEST_DEF(fma, fma_ref<TestType>, 0, 0)
 TEST_CASE("Unit_Device_fma_fmaf_Negative_RTC") { NegativeTestRTCWrapper<12>(kFma); }
 
 __global__ void fdividef_kernel(float* const ys, const size_t num_xs, float* const x1s,
