@@ -55,8 +55,7 @@ if(Boost_FOUND)
   hip_add_exe_to_target(NAME MathsTest
                         TEST_SRC ${TEST_SRC}
                         TEST_TARGET_NAME build_tests COMMON_SHARED_SRC ${COMMON_SHARED_SRC}
-                        LINKER_LIBS ${LINKER_LIBS}
-                        EXTRA_ARGS -M 1)
+                        LINKER_LIBS ${LINKER_LIBS})
   target_include_directories(MathsTest PRIVATE ${Boost_INCLUDE_DIRS})
 else()
   message(STATUS "Boost not found. Dependent math tests not enabled.")
