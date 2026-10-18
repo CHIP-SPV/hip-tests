@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 #include <boost/math/special_functions.hpp>
 
-// Return NaN or infinity like libm instead of throwing.
+// Return NaN or infinity instead of throwing.
 using ref_policy = boost::math::policies::policy<
     boost::math::policies::domain_error<boost::math::policies::ignore_error>,
     boost::math::policies::pole_error<boost::math::policies::ignore_error>,
@@ -819,7 +819,7 @@ TEST_CASE("Unit_Device_y1f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_y1_Accuracy_Limited_Positive") {
-  long double (*ref)(long double) = [](long double x) { return boost::math::cyl_neumann(1, x, ref_policy()); };
+  long double (*ref)(long double) = [](long double x) { return x == 0 ? -std::numeric_limits<long double>::infinity() : boost::math::cyl_neumann(1, x, ref_policy()); };
   UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<float, double>>(y1_kernel<double>), ref,
                                      AbsValidatorBuilderFactory<float>(5.e-12), -8.,
                                      std::numeric_limits<double>::max());
@@ -882,7 +882,7 @@ TEST_CASE("Unit_Device_ynf_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_yn_Accuracy_Limited_Positive") {
-  long double (*ref)(int, long double) = [](int n, long double x) { return boost::math::cyl_neumann(n, x, ref_policy()); };
+  long double (*ref)(int, long double) = [](int n, long double x) { return x == 0 ? -std::numeric_limits<long double>::infinity() : boost::math::cyl_neumann(n, x, ref_policy()); };
   int n = GENERATE(5, 25, 120);
   BesselDoublePrecisionBruteForceTest(kernel_cast<kernel_bessel_n_sig<double>>(yn_kernel<double>), ref,
                                       AbsValidatorBuilderFactory<double>(5.e-12), n, 1.5 * n,
