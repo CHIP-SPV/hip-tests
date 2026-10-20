@@ -25,6 +25,9 @@ THE SOFTWARE.
 #include "math_special_func_kernels_rtc.hh"
 
 #include <boost/math/special_functions.hpp>
+#include <boost/multiprecision/cpp_bin_float.hpp>
+#include <cfloat>
+#include <type_traits>
 
 // Return NaN or infinity instead of throwing.
 using ref_policy = boost::math::policies::policy<
@@ -32,6 +35,9 @@ using ref_policy = boost::math::policies::policy<
     boost::math::policies::pole_error<boost::math::policies::ignore_error>,
     boost::math::policies::overflow_error<boost::math::policies::ignore_error>,
     boost::math::policies::evaluation_error<boost::math::policies::ignore_error>>;
+
+// cyl_bessel_i reference type: long double is no wider than double on some hosts (arm64 macOS).
+using bessel_i_ref_t = std::conditional_t<(LDBL_MANT_DIG > DBL_MANT_DIG), long double, boost::multiprecision::cpp_bin_float_quad>;
 
 
 /**
@@ -615,8 +621,8 @@ TEST_CASE("Unit_Device_cyl_bessel_i0f_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `cyl_bessel_i0(x)` against a table of difficult values,
  * followed by a large number of randomly generated values from range [0, 10000). The results are
- * compared against reference function `long double boost::math::cyl_bessel_i(0, long double)`. The maximum
- * ulp error is 6.
+ * compared against reference function `boost::math::cyl_bessel_i(0, x)` computed in a type wider than double.
+ * The maximum ulp error is 6.
  *
  * Test source
  * ------------------------
@@ -626,7 +632,7 @@ TEST_CASE("Unit_Device_cyl_bessel_i0f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_cyl_bessel_i0_Accuracy_Limited_Positive") {
-  auto cyl_bessel_i0_ref = [](long double arg) -> long double { return boost::math::cyl_bessel_i(0, arg, ref_policy()); };
+  auto cyl_bessel_i0_ref = [](long double arg) -> long double { return static_cast<long double>(boost::math::cyl_bessel_i(0, bessel_i_ref_t(arg), ref_policy())); };
   long double (*ref)(long double) = cyl_bessel_i0_ref;
   UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<double, double>>(cyl_bessel_i0_kernel<double>), ref,
                                      ULPValidatorBuilderFactory<double>(6), 0, 10000);
@@ -676,8 +682,8 @@ TEST_CASE("Unit_Device_cyl_bessel_i1f_Accuracy_Limited_Positive") {
  * ------------------------
  *    - Tests the numerical accuracy of `cyl_bessel_i1(x)` against a table of difficult values,
  * followed by a large number of randomly generated values from range [0, 10000). The results are
- * compared against reference function `long double boost::math::cyl_bessel_i(1, long double)`. The maximum
- * ulp error is 6.
+ * compared against reference function `boost::math::cyl_bessel_i(1, x)` computed in a type wider than double.
+ * The maximum ulp error is 6.
  *
  * Test source
  * ------------------------
@@ -687,7 +693,7 @@ TEST_CASE("Unit_Device_cyl_bessel_i1f_Accuracy_Limited_Positive") {
  *    - HIP_VERSION >= 5.2
  */
 TEST_CASE("Unit_Device_cyl_bessel_i1_Accuracy_Limited_Positive") {
-  auto cyl_bessel_i1_ref = [](long double arg) -> long double { return boost::math::cyl_bessel_i(1, arg, ref_policy()); };
+  auto cyl_bessel_i1_ref = [](long double arg) -> long double { return static_cast<long double>(boost::math::cyl_bessel_i(1, bessel_i_ref_t(arg), ref_policy())); };
   long double (*ref)(long double) = cyl_bessel_i1_ref;
   UnaryDoublePrecisionBruteForceTest(kernel_cast<kernel_sig<double, double>>(cyl_bessel_i1_kernel<double>), ref,
                                      ULPValidatorBuilderFactory<double>(6), 0, 10000);
