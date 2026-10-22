@@ -31,6 +31,11 @@ hip_add_exe_to_target(NAME dynamicLoading
                       TEST_SRC ${TEST_SRC}
                       TEST_TARGET_NAME build_tests)
 
+# Rewrite the absolute -MT depfile targets to the paths Ninja expects.
+if(POLICY CMP0116)
+  cmake_policy(SET CMP0116 NEW)
+endif()
+
 set(LIBLAZYLOAD_OUT "${CMAKE_CURRENT_BINARY_DIR}/libLazyLoad.so")
 set(BIT_EXTRACT_OUT "${CMAKE_CURRENT_BINARY_DIR}/bit_extract_kernel.code")
 set(VECADD_OUT "${CMAKE_CURRENT_BINARY_DIR}/vecadd.cc")
