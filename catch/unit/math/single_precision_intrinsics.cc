@@ -90,7 +90,7 @@ MATH_UNARY_SP_TEST_DEF_IMPL(__fsqrt_rn, static_cast<float (*)(float)>(std::sqrt)
                             EqValidatorBuilderFactory<float>());
 
 
-static float __frsqrt_rn_ref(float x) { return 1.0f / std::sqrt(x); }
+static float __frsqrt_rn_ref(float x) { return static_cast<float>(1.0 / std::sqrt(static_cast<double>(x))); }
 
 MATH_UNARY_SP_KERNEL_DEF(__frsqrt_rn);
 
@@ -98,8 +98,8 @@ MATH_UNARY_SP_KERNEL_DEF(__frsqrt_rn);
  * Test Description
  * ------------------------
  *    - Tests the numerical accuracy of `__frsqrt_rn(x)` for all possible inputs. The results are
- * compared against reference function `float std::sqrt(float)`. The error bounds are
- * IEEE-compliant.
+ * compared against reference function `static_cast<float>(1.0 / std::sqrt(static_cast<double>(x)))`.
+ * The error bounds are IEEE-compliant.
  *
  * Test source
  * ------------------------
@@ -146,7 +146,7 @@ MATH_UNARY_SP_KERNEL_DEF(__exp10f);
  * Test Description
  * ------------------------
  *    - Tests the numerical accuracy of `__exp10f(x)` for all possible inputs. The results are
- * compared against reference function `double exp10(double)`. The maximum ulp error is `2 +
+ * compared against reference function `double std::pow(10.0, x)`. The maximum ulp error is `2 +
  * floor(abs(2.95 * x))`.
  *
  * Test source
@@ -156,7 +156,10 @@ MATH_UNARY_SP_KERNEL_DEF(__exp10f);
  * ------------------------
  *    - HIP_VERSION >= 5.2
  */
-MATH_UNARY_SP_TEST_DEF(__exp10f, static_cast<double (*)(double)>(exp10));
+// exp10 is a GNU extension; macOS libc does not have it.
+static double exp10_ref(double x) { return std::pow(10.0, x); }
+
+MATH_UNARY_SP_TEST_DEF(__exp10f, exp10_ref);
 
 
 MATH_UNARY_SP_VALIDATOR_BUILDER_DEF(__logf) {

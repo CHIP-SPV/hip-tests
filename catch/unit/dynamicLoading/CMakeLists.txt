@@ -31,16 +31,32 @@ hip_add_exe_to_target(NAME dynamicLoading
                       TEST_SRC ${TEST_SRC}
                       TEST_TARGET_NAME build_tests)
 
+# Rewrite the absolute -MT depfile targets to the paths Ninja expects.
+if(POLICY CMP0116)
+  cmake_policy(SET CMP0116 NEW)
+endif()
+
 set(LIBLAZYLOAD_OUT "${CMAKE_CURRENT_BINARY_DIR}/libLazyLoad.so")
 set(BIT_EXTRACT_OUT "${CMAKE_CURRENT_BINARY_DIR}/bit_extract_kernel.code")
 set(VECADD_OUT "${CMAKE_CURRENT_BINARY_DIR}/vecadd.cc")
 
+# Under chipStar libLazyLoad.so links libCHIP.so and the host math library.
+set(LIBLAZYLOAD_LINK_DEPS "")
+if(TARGET CHIP)
+  list(APPEND LIBLAZYLOAD_LINK_DEPS $<TARGET_FILE:CHIP>)
+endif()
+if(TARGET ocml_host_math_funcs)
+  list(APPEND LIBLAZYLOAD_LINK_DEPS $<TARGET_FILE:ocml_host_math_funcs>)
+endif()
+
 if(HIP_PLATFORM MATCHES "amd")
 add_custom_command(OUTPUT "${LIBLAZYLOAD_OUT}"
-  COMMAND ${CMAKE_CXX_COMPILER} -fPIC -lpthread -shared ${OFFLOAD_ARCH_STR} ${CMAKE_CURRENT_SOURCE_DIR}/liblazyLoad.cc -I${CMAKE_CURRENT_SOURCE_DIR}/../../include -I${CMAKE_CURRENT_SOURCE_DIR}/../../external/Catch2 -L${HIP_PATH}/${CMAKE_INSTALL_LIBDIR} -o libLazyLoad.so
+  COMMAND ${CMAKE_CXX_COMPILER} -fPIC -lpthread -shared ${OFFLOAD_ARCH_STR} ${CMAKE_CURRENT_SOURCE_DIR}/liblazyLoad.cc -I${CMAKE_CURRENT_SOURCE_DIR}/../../include -I${CMAKE_CURRENT_SOURCE_DIR}/../../external/Catch2 -L${HIP_PATH}/${CMAKE_INSTALL_LIBDIR} -o libLazyLoad.so -MD -MF ${LIBLAZYLOAD_OUT}.d -MT ${LIBLAZYLOAD_OUT}
+  DEPFILE ${LIBLAZYLOAD_OUT}.d
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Building libLazyLoad.so"
-  MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/liblazyLoad.cc)
+  MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/liblazyLoad.cc
+  DEPENDS ${HIP_DEVICE_TOOLCHAIN_STAMP} ${LIBLAZYLOAD_LINK_DEPS})
 elseif(HIP_PLATFORM MATCHES "nvidia")
 add_custom_command(OUTPUT "${LIBLAZYLOAD_OUT}"
   COMMAND ${CMAKE_CXX_COMPILER} -Xcompiler -fPIC -lpthread -shared ${CMAKE_CURRENT_SOURCE_DIR}/liblazyLoad.cc -I${CMAKE_CURRENT_SOURCE_DIR}/../../include -I${CMAKE_CURRENT_SOURCE_DIR}/../../external/Catch2 -I${HIP_PATH}/include/ -o libLazyLoad.so
@@ -56,9 +72,11 @@ add_custom_command(OUTPUT "${LIBLAZYLOAD_OUT}"
 endif()
 
 add_custom_command(OUTPUT "${BIT_EXTRACT_OUT}"
-  COMMAND ${CMAKE_CXX_COMPILER} --genco ${OFFLOAD_ARCH_STR} ${CMAKE_CURRENT_SOURCE_DIR}/bit_extract_kernel.cpp -o ${BIT_EXTRACT_OUT} -I${HIP_PATH}/include/ -I${CMAKE_CURRENT_SOURCE_DIR}/../../include -L${HIP_PATH}/${CMAKE_INSTALL_LIBDIR}
+  COMMAND ${CMAKE_CXX_COMPILER} --genco ${OFFLOAD_ARCH_STR} ${CMAKE_CURRENT_SOURCE_DIR}/bit_extract_kernel.cpp -o ${BIT_EXTRACT_OUT} -I${HIP_PATH}/include/ -I${CMAKE_CURRENT_SOURCE_DIR}/../../include -L${HIP_PATH}/${CMAKE_INSTALL_LIBDIR} -MD -MF ${BIT_EXTRACT_OUT}.d -MT ${BIT_EXTRACT_OUT}
+  DEPFILE ${BIT_EXTRACT_OUT}.d
   COMMENT "Building bit_extract_kernel.code"
-  MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/bit_extract_kernel.cpp)
+  MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/bit_extract_kernel.cpp
+  DEPENDS ${HIP_DEVICE_TOOLCHAIN_STAMP})
 
 add_custom_command(OUTPUT "${VECADD_OUT}"
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/vecadd.cc ${VECADD_OUT}
