@@ -28,7 +28,14 @@ THE SOFTWARE.
 MATH_UNARY_WITHIN_ULP_TEST_DEF(fabs, std::fabs, 0, 0)
 TEST_CASE("Unit_Device_fabs_fabsf_Negative_RTC") { NegativeTestRTCWrapper<4>(kFabs); }
 
-MATH_BINARY_WITHIN_ULP_TEST_DEF(copysign, std::copysign, 0, 0)
+// Takes the tested type directly: widening a NaN to double can drop its sign.
+MATH_BINARY_KERNEL_DEF(copysign)
+
+TEMPLATE_TEST_CASE("Unit_Device_copysign_Accuracy_Positive", "", float, double) {
+  TestType (*ref)(TestType, TestType) = std::copysign;
+  BinaryFloatingPointTest(kernel_cast<kernel_sig<TestType, TestType, TestType>>(copysign_kernel<TestType>),
+                          ref, ULPValidatorBuilderFactory<TestType>(0));
+}
 TEST_CASE("Unit_Device_copysign_copysignf_Negative_RTC") { NegativeTestRTCWrapper<8>(kCopySign); }
 
 MATH_BINARY_WITHIN_ULP_TEST_DEF(fmax, std::fmax, 0, 0)
