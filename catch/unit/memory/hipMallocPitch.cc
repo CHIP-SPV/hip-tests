@@ -332,20 +332,21 @@ static constexpr auto CHUNK_LOOP{100};
 template<typename T>
 __global__ void copy_var(T* A, T* B,
                               size_t ROWS, size_t pitch_A) {
-  for (uint64_t i = 0; i< ROWS*pitch_A; i= i+pitch_A) {
-    A[i] = B[i];
+  size_t stride = pitch_A / sizeof(T);
+  for (size_t r = 0; r < ROWS; ++r) {
+    for (size_t c = 0; c < COLUMNS; ++c) {
+      B[r * stride + c] = A[r * stride + c];
+    }
   }
 }
 template<typename T>
-static bool validateResult(T* A, T* B, size_t pitch_A) {
-  bool testResult = true;
-  for (uint64_t i=0; i < pitch_A*ROWS; i=i+pitch_A) {
+static bool validateResult(T* A, T* B) {
+  for (uint64_t i = 0; i < ROWS * COLUMNS; ++i) {
     if (A[i] != B[i]) {
-      testResult = false;
-      break;
+      return false;
     }
   }
-  return testResult;
+  return true;
 }
 /*
  * This API verifies  memory allocations for small and
@@ -499,6 +500,8 @@ TEST_CASE("Unit_hipMallocPitch_MultiThread", "") {
  */
 TEMPLATE_TEST_CASE("Unit_hipMallocPitch_KernelLaunch", "", int, float, double) {
   CHECK_IMAGE_SUPPORT
+  // Drop an error left by earlier tests in this process; hipGetLastError keeps it.
+  hipGetLastError();
 
   HIP_CHECK(hipSetDevice(0));
   TestType  *A_h{nullptr}, *B_h{nullptr}, *C_h{nullptr}, *A_d{nullptr},
@@ -531,7 +534,7 @@ TEMPLATE_TEST_CASE("Unit_hipMallocPitch_KernelLaunch", "", int, float, double) {
                         hipMemcpyDeviceToHost));
 
   // Validating the result
-  validateResult(A_h, B_h, pitch_A);
+  REQUIRE(validateResult(A_h, B_h));
 
   // DeAllocating the memory
   HIP_CHECK(hipFree(A_d));
