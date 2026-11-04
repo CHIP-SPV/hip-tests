@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 
 #include <hip_test_common.hh>
+#include <algorithm>
 #include <initializer_list>
 #include <memory>
 #include "hip/driver_types.h"
@@ -325,15 +326,6 @@ __global__ void copy_var(T* A, T* B,
     }
   }
 }
-template<typename T>
-static bool validateResult(T* A, T* B) {
-  for (uint64_t i = 0; i < ROWS * COLUMNS; ++i) {
-    if (A[i] != B[i]) {
-      return false;
-    }
-  }
-  return true;
-}
 /*
  * This API verifies  memory allocations for small and
  * bigger chunks of data.
@@ -477,7 +469,7 @@ TEST_CASE("Unit_hipMallocPitch_MultiThread", "") {
  *  3. Validating the result
  */
 TEMPLATE_TEST_CASE("Unit_hipMallocPitch_KernelLaunch", "", int, float, double) {
-  // Drop an error left by earlier tests in this process; hipGetLastError keeps it.
+  // Clear an error left by earlier tests in this process.
   hipGetLastError();
 
   HIP_CHECK(hipSetDevice(0));
@@ -511,7 +503,7 @@ TEMPLATE_TEST_CASE("Unit_hipMallocPitch_KernelLaunch", "", int, float, double) {
                         hipMemcpyDeviceToHost));
 
   // Validating the result
-  REQUIRE(validateResult(A_h, B_h));
+  REQUIRE(std::equal(A_h, A_h + ROWS * COLUMNS, B_h));
 
   // DeAllocating the memory
   HIP_CHECK(hipFree(A_d));
