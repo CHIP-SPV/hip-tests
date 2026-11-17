@@ -6,6 +6,9 @@
 
 #include <hip_test_common.hh>
 #include <utils.hh>
+#include <resource_guards.hh>
+
+#include <memory>
 
 HIP_TEST_CASE(Unit_hipHostGetDevicePointer_Negative) {
   int* hPtr{nullptr};
@@ -86,6 +89,7 @@ HIP_TEST_CASE(Unit_hipHostGetDevicePointer_UseCase) {
 
 // An interior host pointer must map to a device pointer with the same offset.
 HIP_TEST_CASE(Unit_hipHostGetDevicePointer_InteriorPointer) {
+  static_cast<void>(hipGetLastError());
   if (!DeviceAttributesSupport(0, hipDeviceAttributeCanMapHostMemory)) {
     HIP_SKIP_TEST(HipTest::SkipReason::kHostPinnedMemoryUnsupported);
   }
@@ -106,6 +110,7 @@ HIP_TEST_CASE(Unit_hipHostGetDevicePointer_InteriorPointer) {
     const int before = *reinterpret_cast<int*>(base);
 
     kernel<<<1, 1>>>(dPtr, kSentinel);
+    HIP_CHECK(hipGetLastError());
     HIP_CHECK(hipDeviceSynchronize());
 
     REQUIRE(*reinterpret_cast<int*>(base + offset) == kSentinel);
@@ -114,8 +119,8 @@ HIP_TEST_CASE(Unit_hipHostGetDevicePointer_InteriorPointer) {
   };
 
   SECTION("hipHostMalloc") {
-    char* base{nullptr};
-    HIP_CHECK(hipHostMalloc(reinterpret_cast<void**>(&base), kSize, hipHostMallocMapped));
+    LinearAllocGuard<char> host(LinearAllocs::hipHostMalloc, kSize, hipHostMallocMapped);
+    char* base = host.host_ptr();
     memset(base, 0, kSize);
 
     void* devBase{nullptr};
@@ -124,15 +129,16 @@ HIP_TEST_CASE(Unit_hipHostGetDevicePointer_InteriorPointer) {
     for (size_t offset : kOffsets) {
       checkInterior(base, devBase, offset);
     }
-
-    HIP_CHECK(hipHostFree(base));
   }
 
   SECTION("hipHostRegister") {
-    char* base = reinterpret_cast<char*>(malloc(kSize));
+    LinearAllocGuard<char> host(LinearAllocs::malloc, kSize);
+    char* base = host.host_ptr();
     REQUIRE(base != nullptr);
     memset(base, 0, kSize);
     HIP_CHECK(hipHostRegister(base, kSize, hipHostRegisterMapped));
+    auto unregister = [](char* p) { static_cast<void>(hipHostUnregister(p)); };
+    std::unique_ptr<char, decltype(unregister)> registration(base, unregister);
 
     // Query an interior pointer before the base, as an application laying out fields does.
     int* dInterior{nullptr};
@@ -148,9 +154,6 @@ HIP_TEST_CASE(Unit_hipHostGetDevicePointer_InteriorPointer) {
     for (size_t offset : kOffsets) {
       checkInterior(base, devBase, offset);
     }
-
-    HIP_CHECK(hipHostUnregister(base));
-    free(base);
   }
 }
 
